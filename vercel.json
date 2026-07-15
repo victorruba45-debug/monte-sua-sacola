@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/monte-sua-sacola-hub_3_7.html"
+      "destination": "/monte-sua-sacola-hub_3_7"
     }
   ],
   "cleanUrls": true,
