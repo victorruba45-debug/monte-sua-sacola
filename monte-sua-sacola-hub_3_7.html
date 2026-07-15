@@ -2066,7 +2066,7 @@ function setIlhos(v){ window.__justSelected=true; S.ilhos=v; renderStep(); }
 
 function stepQtd(){
   // Savings hints to induce larger orders
-  const SAVE = {250:"", 500:"−12% por un.", 1000:"−24% por un.", 2000:"−32% por un.", 5000:"melhor preço"};
+  const SAVE = {250:"", 500:"em média −12% por un.", 1000:"em média −24% por un.", 2000:"em média −32% por un.", 5000:"melhor preço"};
   const cards = QTDS.map(q=>{
     const save = SAVE[q] ? `<span class="qty-save">${SAVE[q]}</span>` : "";
     return `<button class="qty-card ${S.qtd===q?'sel':''}" onclick="setQtd(${q})" role="radio" aria-checked="${S.qtd===q?'true':'false'}" aria-label="${q.toLocaleString('pt-BR')} unidades">
