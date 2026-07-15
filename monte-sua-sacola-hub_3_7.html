@@ -1160,6 +1160,20 @@ body{overscroll-behavior-y:contain}
 /* Sem cascata ao re-selecionar (evita "piscada" a cada toque) */
 .no-cascade .opt,.no-cascade .qty-card,.no-cascade .tier{animation:none}
 
+/* ── Medida personalizada ── */
+.tam-custom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tam-custom-grid label{display:flex;flex-direction:column;gap:6px;font-size:.78rem;font-weight:600;color:var(--ink-soft)}
+.tam-custom-grid input{
+  width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;
+  font-size:1rem;font-weight:600;color:var(--ink);font-family:inherit;background:var(--bg-2);
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.tam-custom-grid input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(10,10,10,.08)}
+.tam-custom-confirm{margin-top:12px;width:100%}
+.bonus-ilhos.tam-custom-sel{border-color:var(--ink);box-shadow:0 0 0 2px rgba(10,10,10,.10)}
+.bonus-ilhos.tam-custom-sel .bonus-t{color:var(--ink)}
+@media(max-width:400px){.tam-custom-grid{grid-template-columns:1fr}}
+
 /* Barra de progresso com brilho passando (vida no topo do configurador) */
 .progress i{position:relative;overflow:hidden}
 .progress i::after{
@@ -1409,18 +1423,14 @@ const TIERS = [
 ];
 
 const TAMANHOS = [
-  {id:"pp_mini", nome:"PP Mini",     l:10, a:15, p:5,  dica:"Caixinhas de joias, cosméticos pequenos, bombons."},
-  {id:"pp2",     nome:"PP2",        l:13, a:36, p:9,  dica:"Garrafas, estojos longos, produtos compridos."},
-  {id:"p",       nome:"P",          l:18, a:25, p:8,  dica:"Cosméticos, acessórios, pequenas roupas dobradas."},
-  {id:"tam_p",   nome:"TAM P",      l:15, a:22, p:8,  dica:"Similar ao P, base um pouco menor."},
-  {id:"m2",      nome:"M2",         l:22, a:22, p:8,  dica:"Produtos quadrados, caixas, sapatos menores."},
-  {id:"p_plus",  nome:"P+",         l:22, a:25, p:10, dica:"Roupas leves dobradas, acessórios maiores."},
-  {id:"m",       nome:"M",          l:25, a:35, p:10, dica:"O tamanho mais versátil. Roupas, presentes, kits."},
-  {id:"g1",      nome:"G1",         l:32, a:40, p:12, dica:"Roupas em tamanho P/M, caixas médias."},
-  {id:"g2",      nome:"G2",         l:35, a:25, p:10, dica:"Produtos mais largos e baixos."},
-  {id:"g3",      nome:"G3",         l:38, a:30, p:14, dica:"Roupas maiores, kits com vários itens."},
-  {id:"gg",      nome:"GG Jumbo",   l:40, a:50, p:15, dica:"Roupas GG, compras volumosas, coleções grandes."},
-  {id:"exg",     nome:"EXG Master", l:44, a:37, p:14, dica:"Itens extra grandes, embalagens institucionais."},
+  {id:"pp_mini", nome:"PP",                 l:10, a:15, p:5,  dica:"Caixinhas de joias, cosméticos pequenos, bombons."},
+  {id:"tam_p",   nome:"P",                  l:15, a:22, p:8,  dica:"Cosméticos, acessórios, pequenas roupas dobradas."},
+  {id:"p_plus",  nome:"P+",                 l:22, a:25, p:10, dica:"Roupas leves dobradas, acessórios maiores."},
+  {id:"m",       nome:"M",                  l:25, a:35, p:10, dica:"O tamanho mais versátil. Roupas, presentes, kits."},
+  {id:"m2",      nome:"M2",                 l:35, a:25, p:10, dica:"Produtos mais largos e baixos."},
+  {id:"g1",      nome:"G1",                 l:32, a:40, p:12, dica:"Roupas em tamanho P/M, caixas médias."},
+  {id:"gg",      nome:"GG Jumbo",           l:40, a:50, p:15, dica:"Roupas GG, compras volumosas, coleções grandes."},
+  {id:"pp2",     nome:"Especial / Garrafa", l:13, a:36, p:9,  dica:"Garrafas, estojos longos, produtos compridos.", soSeg:"Bebidas"},
 ];
 // Monta o texto da medida no formato "Xcm (Largura) X Ycm (Altura) X Zcm (Fundo)".
 function medStr(t){
@@ -1507,27 +1517,27 @@ const SEGMENTS = [
 const SEG_REC_TAM = {
   Restaurante:    {basico:"m",     intermediario:"m",     premium:"g1"},
   Delivery:       {basico:"g1",    intermediario:"g1"},
-  "Doceria & Cafe":{basico:"p",   intermediario:"p",     premium:"p_plus"},
+  "Doceria & Cafe":{basico:"tam_p", intermediario:"tam_p", premium:"p_plus"},
   Moda:           {basico:"m",     intermediario:"g1",    premium:"g1"},
   Eventos:        {basico:"m",     intermediario:"m",     premium:"g1"},
   Bebidas:        {basico:"pp2",   intermediario:"pp2",   premium:"pp2"},
-  Oticas:         {basico:"p",     intermediario:"p",     premium:"p"},
+  Oticas:         {basico:"tam_p", intermediario:"tam_p", premium:"tam_p"},
   Joias:          {basico:"tam_p", intermediario:"tam_p", premium:"tam_p"},
-  Beleza:         {basico:"p",     intermediario:"p_plus",premium:"m"},
+  Beleza:         {basico:"tam_p", intermediario:"p_plus",premium:"m"},
   Loja:            {basico:"m",     intermediario:"g1",    premium:"g1"},
 };
 
 const SEG_CONSTRAINTS = {
-  Restaurante:     {tiers:["basico","intermediario","premium"],  tams:["p","tam_p","m2","p_plus","m","g1","g2","g3","gg"]},
-  Delivery:        {tiers:["basico","intermediario"],             tams:["m","g1","g2","g3","gg","exg"]},
-  "Doceria & Cafe":{tiers:["basico","intermediario","premium"],  tams:["pp_mini","tam_p","p","m2","p_plus","m"]},
-  Moda:            {tiers:["basico","intermediario","premium"],  tams:["p_plus","m","g1","g2","g3","gg","exg"]},
-  Eventos:         {tiers:["basico","intermediario","premium"],  tams:["m","g1","g2","g3","gg"]},
+  Restaurante:     {tiers:["basico","intermediario","premium"],  tams:["tam_p","p_plus","m","m2","g1","gg"]},
+  Delivery:        {tiers:["basico","intermediario"],             tams:["m","m2","g1","gg"]},
+  "Doceria & Cafe":{tiers:["basico","intermediario","premium"],  tams:["pp_mini","tam_p","p_plus","m","m2"]},
+  Moda:            {tiers:["basico","intermediario","premium"],  tams:["p_plus","m","m2","g1","gg"]},
+  Eventos:         {tiers:["basico","intermediario","premium"],  tams:["m","m2","g1","gg"]},
   Bebidas:         {tiers:["basico","intermediario","premium"],  tams:["pp2"]},
-  Oticas:          {tiers:["basico","intermediario","premium"],  tams:["tam_p","p","m2","p_plus"]},
-  Joias:           {tiers:["basico","intermediario","premium"],  tams:["pp_mini","tam_p","p"]},
-  Beleza:          {tiers:["basico","intermediario","premium"],  tams:["tam_p","p","m2","p_plus","m"]},
-  Loja:            {tiers:["basico","intermediario","premium"],  tams:["pp_mini","tam_p","p","m2","p_plus","m","g1","g2","g3","gg","exg"]},
+  Oticas:          {tiers:["basico","intermediario","premium"],  tams:["tam_p","p_plus"]},
+  Joias:           {tiers:["basico","intermediario","premium"],  tams:["pp_mini","tam_p"]},
+  Beleza:          {tiers:["basico","intermediario","premium"],  tams:["tam_p","p_plus","m"]},
+  Loja:            {tiers:["basico","intermediario","premium"],  tams:["pp_mini","tam_p","p_plus","m","m2","g1","gg"]},
 };
 
 const SEG_TIER_INFO = {
@@ -1829,13 +1839,14 @@ function setMat(id){ window.__justSelected=true; S.mat=id; renderStep(); }
 function stepTam(){
   const SEG_LABELS={Restaurante:"Restaurante","Doceria & Cafe":"Doceria & Café",Moda:"Moda",Eventos:"Eventos",Bebidas:"Bebidas",Oticas:"Óticas",Joias:"Joias",Beleza:"Beleza",Delivery:"Delivery"};
   const allowedTams = S.seg ? (SEG_CONSTRAINTS[S.seg]||{}).tams : null;
-  const tamsToShow = allowedTams ? TAMANHOS.filter(t=>allowedTams.includes(t.id)) : TAMANHOS;
+  const tamsToShow = (allowedTams ? TAMANHOS.filter(t=>allowedTams.includes(t.id)) : TAMANHOS)
+    .filter(t => !t.soSeg || t.soSeg === S.seg);
   const recTamId = S.seg && S.mod ? (SEG_REC_TAM[S.seg]||{})[S.mod] : null;
   const recT = recTamId ? TAMANHOS.find(t=>t.id===recTamId) : null;
   const recBanner = recT ? `<div class="rec-banner">Recomendado para <strong>${SEG_LABELS[S.seg]||S.seg}</strong>: ${recT.nome} — ${medStr(recT)}</div>` : "";
   // Fluxo "do zero" (sem segmento definido): destaca P, M e G1 como mais vendidos
   const isDoZero = !S.seg;
-  const MAIS_VENDIDOS_DO_ZERO = ["p","m","g1"];
+  const MAIS_VENDIDOS_DO_ZERO = ["tam_p","m","g1"];
   return head("Que tamanho você precisa?","Escolha com base no que vai dentro da sacola. As medidas seguem a ordem: <strong>Largura × Altura × Profundidade</strong> (a Profundidade é o fundo — a espessura da sacola).") +
   recBanner +
 
@@ -1844,9 +1855,48 @@ function stepTam(){
     return opt(S.tam===t.id,`setTam('${t.id}')`,sizeIcon(),
     `${t.nome} <span class="t-dims">${t.l} × ${t.a} × ${t.p} cm</span>`,
     t.dica, badge);
-  }).join("")+`</div>`;
+  }).join("")+`</div>`
+  + tamCustomBlock();
 }
 function setTam(id){ window.__justSelected=true; S.tam=id; renderStep(); }
+
+/* ── Medida personalizada (mesmo padrão do opcional ilhós) ── */
+function tamCustomBlock(){
+  const sel = S.tam==="custom" && S.tamCustom;
+  const c = S.tamCustom||{};
+  const open = !!S._tamCustomOpen;
+  return `
+  <button class="bonus-ilhos ${open?'open':''} ${sel?'tam-custom-sel':''}" onclick="toggleTamCustom()" aria-expanded="${open?'true':'false'}">
+    <span class="bonus-txt">
+      <span class="bonus-t">Precisa de uma medida personalizada? ${sel?`<span class="bonus-sel">${c.l} × ${c.a} × ${c.p} cm ✓</span>`:''}</span>
+      <span class="bonus-d">Informe largura, altura e fundo em cm — produzimos sob medida.</span>
+    </span>
+    <svg class="bonus-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+  ${open?`
+  <div class="bonus-panel">
+    <div class="tam-custom-grid">
+      <label>Largura (cm)<input id="tcL" type="number" inputmode="numeric" min="1" placeholder="Ex.: 30" value="${c.l||''}" oninput="onTamCustomInput()"></label>
+      <label>Altura (cm)<input id="tcA" type="number" inputmode="numeric" min="1" placeholder="Ex.: 40" value="${c.a||''}" oninput="onTamCustomInput()"></label>
+      <label>Fundo (cm)<input id="tcP" type="number" inputmode="numeric" min="1" placeholder="Ex.: 12" value="${c.p||''}" oninput="onTamCustomInput()"></label>
+    </div>
+    <button class="modal-confirm tam-custom-confirm" id="tcConfirm" onclick="confirmTamCustom()" ${(c.l>0&&c.a>0&&c.p>0)?'':'disabled'}>Usar esta medida</button>
+  </div>`:''}`;
+}
+function toggleTamCustom(){ S._tamCustomOpen = !S._tamCustomOpen; renderStep(); }
+function onTamCustomInput(){
+  const l=+document.getElementById('tcL').value, a=+document.getElementById('tcA').value, p=+document.getElementById('tcP').value;
+  document.getElementById('tcConfirm').disabled = !(l>0 && a>0 && p>0);
+}
+function confirmTamCustom(){
+  const l=+document.getElementById('tcL').value, a=+document.getElementById('tcA').value, p=+document.getElementById('tcP').value;
+  if(!(l>0 && a>0 && p>0)) return;
+  S.tamCustom = {l:l, a:a, p:p};
+  S.tam = "custom";
+  S._tamCustomOpen = false;
+  window.__justSelected = true;
+  renderStep();
+}
 
 function stepNumCores(){
   const t=tier();
@@ -2200,6 +2250,7 @@ function matName(){ return (MATERIAIS.find(m=>m.id===S.mat)||{}).nome||"a defini
 function matNameSimple(){ const m=MATERIAIS.find(m=>m.id===S.mat); return m?(m.nomeSimples||m.nome):"a definir"; }
 function acabNames(){ return S.acab.map(a=>(ACABAMENTOS.find(x=>x.id===a)||{}).nome).join(", "); }
 function tamName(){
+  if(S.tam==="custom" && S.tamCustom) return `Personalizada — ${medStr(S.tamCustom)}`;
   const t=TAMANHOS.find(x=>x.id===S.tam); return t?`${t.nome} — ${medStr(t)}`:"—";
 }
 function coresTxt(){
