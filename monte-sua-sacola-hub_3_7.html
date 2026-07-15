@@ -767,8 +767,8 @@ input,select,textarea{font-family:inherit}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes tileIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes stepFade{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tileIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes stepFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes bagFloat{from{opacity:0;transform:translateY(18px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
 
@@ -1142,7 +1142,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{
 /* Transição de tela (toda troca de página desliza como app nativo) */
 main{animation:pageIn .45s var(--ease-out) backwards}
 main.hide{animation:none}
-@keyframes pageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px) scale(.996)}to{opacity:1;transform:translateY(0) scale(1)}}
 
 /* Evita pull-to-refresh acidental no meio da configuração */
 body{overscroll-behavior-y:contain}
@@ -1168,6 +1168,14 @@ body{overscroll-behavior-y:contain}
 /* Opção indisponível (ex.: verniz com laminação brilho) */
 .opt.dis{opacity:.42;cursor:not-allowed}
 .opt.dis:hover{transform:none;box-shadow:none;border-color:var(--line)}
+
+/* ── Transições refinadas (curva única e suave em tudo) ── */
+main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+#stepHost.anim-step,.anim-step{animation:stepFade .5s cubic-bezier(.22,1,.36,1)}
+.opts .opt,.qty-grid .qty-card,.tiers .tier{animation-duration:.5s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+.seg-tile{animation-timing-function:cubic-bezier(.22,1,.36,1)}
+.opt,.tier,.qty-card,.path-card,.btn{transition-timing-function:cubic-bezier(.22,1,.36,1)}
+.progress i{transition:width .6s cubic-bezier(.22,1,.36,1)}
 
 /* ── Medida personalizada ── */
 .tam-custom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -2066,7 +2074,7 @@ function setIlhos(v){ window.__justSelected=true; S.ilhos=v; renderStep(); }
 
 function stepQtd(){
   // Savings hints to induce larger orders
-  const SAVE = {250:"", 500:"em média −12% por un.", 1000:"em média −24% por un.", 2000:"em média −32% por un.", 5000:"melhor preço"};
+  const SAVE = {250:"", 500:"Média −12% por un.", 1000:"Média −24% por un.", 2000:"Média −32% por un.", 5000:"melhor preço"};
   const cards = QTDS.map(q=>{
     const save = SAVE[q] ? `<span class="qty-save">${SAVE[q]}</span>` : "";
     return `<button class="qty-card ${S.qtd===q?'sel':''}" onclick="setQtd(${q})" role="radio" aria-checked="${S.qtd===q?'true':'false'}" aria-label="${q.toLocaleString('pt-BR')} unidades">
