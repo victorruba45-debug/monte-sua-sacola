@@ -174,18 +174,23 @@ input,select,textarea{font-family:inherit}
 /* ── Luz "navegando" sozinha no hero (efeito autônomo, funciona no mobile) ── */
 .hero-orb{
   position:absolute;top:0;left:0;
-  width:min(520px,72vw);height:min(520px,72vw);
+  width:min(560px,95vw);height:min(560px,95vw);
   margin:-160px 0 0 -160px;
   border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(255,255,255,.09) 0%,rgba(255,255,255,.03) 40%,transparent 68%);
-  animation:orbDrift 20s ease-in-out infinite alternate;
+  background:radial-gradient(circle,rgba(255,255,255,.17) 0%,rgba(255,255,255,.06) 40%,transparent 68%);
+  animation:orbDrift 14s ease-in-out infinite alternate;
   will-change:transform;
 }
 .hero-orb.o2{
   top:auto;left:auto;bottom:-120px;right:-120px;margin:0;
-  width:min(360px,55vw);height:min(360px,55vw);
-  background:radial-gradient(circle,rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 42%,transparent 70%);
-  animation:orbDrift2 26s ease-in-out infinite alternate;
+  width:min(400px,70vw);height:min(400px,70vw);
+  background:radial-gradient(circle,rgba(255,255,255,.12) 0%,rgba(255,255,255,.04) 42%,transparent 70%);
+  animation:orbDrift2 18s ease-in-out infinite alternate;
+}
+/* No celular a luz precisa ser mais evidente */
+@media(max-width:700px){
+  .hero-orb{background:radial-gradient(circle,rgba(255,255,255,.22) 0%,rgba(255,255,255,.08) 40%,transparent 68%);animation-duration:11s}
+  .hero-orb.o2{background:radial-gradient(circle,rgba(255,255,255,.15) 0%,rgba(255,255,255,.05) 42%,transparent 70%);animation-duration:14s}
 }
 @keyframes orbDrift{
   0%{transform:translate(-4vw,-20px) scale(1)}
@@ -1160,6 +1165,10 @@ body{overscroll-behavior-y:contain}
 /* Sem cascata ao re-selecionar (evita "piscada" a cada toque) */
 .no-cascade .opt,.no-cascade .qty-card,.no-cascade .tier{animation:none}
 
+/* Opção indisponível (ex.: verniz com laminação brilho) */
+.opt.dis{opacity:.42;cursor:not-allowed}
+.opt.dis:hover{transform:none;box-shadow:none;border-color:var(--line)}
+
 /* ── Medida personalizada ── */
 .tam-custom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .tam-custom-grid label{display:flex;flex-direction:column;gap:6px;font-size:.78rem;font-weight:600;color:var(--ink-soft)}
@@ -1263,14 +1272,6 @@ body{overscroll-behavior-y:contain}
     <h1>Monte a sua sacola e receba o <em>orçamento na hora</em>.</h1>
     <p>Escolha um dos nossos modelos pra começar rápido ou monte do zero. Em menos de um minuto sua sacola fica pronta e você volta pro WhatsApp com tudo certinho.</p>
     <div class="paths">
-      <button class="path-card path-seg" onclick="openSegPage()">
-        <span class="path-ico">📦</span>
-        <span class="path-body">
-          <strong>Escolher por segmento</strong>
-          <span>Recomendamos o modelo, o tamanho e a qualidade certa para o seu ramo</span>
-        </span>
-        <svg class="path-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
       <button class="path-card path-custom" onclick="startFromScratch()">
         <span class="path-ico">✏️</span>
         <span class="path-body">
@@ -1300,7 +1301,6 @@ body{overscroll-behavior-y:contain}
       <div>
         <div class="sf-ct">Atalhos</div>
         <button class="sf-l" onclick="goHome()">Início</button>
-        <button class="sf-l" onclick="openSegPage()">Escolher por segmento</button>
         <button class="sf-l" onclick="startFromScratch()">Configurar do zero</button>
       </div>
       <div>
@@ -1391,10 +1391,10 @@ const CORES = [
 /* As 3 categorias — o coração do site. Cada uma trava o que faz sentido. */
 const TIERS = [
   {
-    id:"basico", nome:"Básico", sub:"Kraft 110g a 150g", badge:null,
+    id:"basico", nome:"Básico", sub:"Kraft 150g", badge:null,
     tagline:"Simples, prática e econômica",
     atende:"Ideal pra delivery, fast-food, padarias e quem precisa de uma embalagem simples no dia a dia.",
-    inclui:["Papel kraft de 110g a 150g (natural ou branco)","Impressão 1/0, 2/0 ou 4/0","Alça retorcida ou sem alça","Medidas sob medida"],
+    inclui:["Papel kraft de 150g (natural ou branco)","Impressão em 1, 2 ou 4 cores — frente e verso","Alça retorcida ou sem alça","Medidas sob medida"],
     naoInclui:null,
     precoKey:"precoBasico",
     cores:"kraft", numCores:["1/0","2/0","4/0"], alcas:["sem_alca","retorcido","nylon"],
@@ -1404,17 +1404,17 @@ const TIERS = [
     id:"intermediario", nome:"Intermediária", sub:"Offset 180g a 240g · Sacola 7", badge:["best","Mais vendida"],
     tagline:"O melhor custo-benefício",
     atende:"A queridinha. Pra lojas, marcas e comércios que querem qualidade de verdade sem pagar caro.",
-    inclui:["Papel offset de 180g a 240g","Impressão 1/0, 2/0 ou 4/0","Ilhós opcional (adicional)","Todas as opções de alça"],
+    inclui:["Papel offset de 180g (a partir do tamanho G: 240g)","Impressão em 1, 2 ou 4 cores — frente e verso","Ilhós opcional (adicional)","Todas as opções de alça"],
     naoInclui:"Sem laminação — pra acabamentos especiais, vá de Premium.",
     precoKey:"precoIntermediario",
     cores:"full", numCores:["1/0","2/0","4/0"], alcas:["retorcido","nylon","gorgurão","sao_francisco"],
     materiais:null, acabamentos:null,
   },
   {
-    id:"premium", nome:"Premium", sub:"Triplex 210g a 240g", badge:["prem","Premium"],
+    id:"premium", nome:"Premium", sub:"Triplex 210g a 250g", badge:["prem","Premium"],
     tagline:"Requinte e durabilidade",
     atende:"Pra marcas que querem uma embalagem marcante: boutiques, óticas, joalherias e presentes especiais.",
-    inclui:["Papel triplex de 210g a 240g — encorpado e nobre","Impressão 1/0, 2/0 ou 4/0","Laminação, hot stamping ou verniz","Alças premium: nylon, gorgurão ou são francisco"],
+    inclui:["Papel triplex de 210g (a partir do tamanho G: 250g) — encorpado e nobre","Impressão em 1, 2 ou 4 cores — frente e verso","Laminação, hot stamping ou verniz","Alças premium: nylon, gorgurão ou são francisco"],
     naoInclui:null,
     precoKey:"precoPremium",
     cores:"full", numCores:["1/0","2/0","4/0"], alcas:["nylon","gorgurão","sao_francisco"],
@@ -1424,13 +1424,13 @@ const TIERS = [
 
 const TAMANHOS = [
   {id:"pp_mini", nome:"PP",                 l:10, a:15, p:5,  dica:"Caixinhas de joias, cosméticos pequenos, bombons."},
-  {id:"tam_p",   nome:"P",                  l:15, a:22, p:8,  dica:"Cosméticos, acessórios, pequenas roupas dobradas."},
-  {id:"p_plus",  nome:"P+",                 l:22, a:25, p:10, dica:"Roupas leves dobradas, acessórios maiores."},
+  {id:"tam_p",   nome:"P",                  l:15, a:22, p:8,  dica:"Cosméticos, acessórios e itens pequenos."},
+  {id:"p_plus",  nome:"P+",                 l:22, a:25, p:10, dica:"Acessórios maiores, caixas pequenas e presentes."},
   {id:"m",       nome:"M",                  l:25, a:35, p:10, dica:"O tamanho mais versátil. Roupas, presentes, kits."},
   {id:"m2",      nome:"M2",                 l:35, a:25, p:10, dica:"Produtos mais largos e baixos."},
   {id:"g1",      nome:"G1",                 l:32, a:40, p:12, dica:"Roupas em tamanho P/M, caixas médias."},
   {id:"gg",      nome:"GG Jumbo",           l:40, a:50, p:15, dica:"Roupas GG, compras volumosas, coleções grandes."},
-  {id:"pp2",     nome:"Especial / Garrafa", l:13, a:36, p:9,  dica:"Garrafas, estojos longos, produtos compridos.", soSeg:"Bebidas"},
+  {id:"pp2",     nome:"Especial / Garrafa", l:13, a:36, p:9,  dica:"Garrafas, estojos longos, produtos compridos."},
 ];
 // Monta o texto da medida no formato "Xcm (Largura) X Ycm (Altura) X Zcm (Fundo)".
 function medStr(t){
@@ -1693,7 +1693,7 @@ function steps(){
   if(t.acabamentos) list.push({key:"acab",label:"Acabamentos",render:stepAcab,valid:()=>true});
   list.push({key:"qtd",label:"Quantidade",render:stepQtd,valid:()=>!!S.qtd});
   // Fluxo "do zero": pessoa escolhe o segmento antes de finalizar
-  if(S.origem==="zero") list.push({key:"seg",label:"Segmento",render:stepSeg,valid:()=>!!S.seg});
+  // Passo de segmento removido (o site não usa mais escolha por segmento)
   list.push({key:"final",label:"Finalizar",render:stepFinal,valid:()=>true});
   return list;
 }
@@ -1828,7 +1828,7 @@ function setMod(id){
 
 function stepMat(){
   return head("Qual tipo de papel?",`O papel define a resistência e o visual. Ambos são rígidos e têm ótimo acabamento — a diferença está na estrutura.`) +
-  `<div class="opts" role="radiogroup">`+ MATERIAIS.map(m=>opt(S.mat===m.id,`setMat('${m.id}')`,paperIcon(),m.nome,m.d)).join("")+`</div>
+  `<div class="opts" role="radiogroup">`+ MATERIAIS.map(m=>opt(S.mat===m.id,`setMat('${m.id}')`,paperIcon(),(m.id==="triplex"?`Triplex ${isTamG()?"250g":"210g"}`:m.nome),m.d)).join("")+`</div>
   <div class="field" style="background:var(--green-soft);border-radius:14px;padding:14px 16px;margin-top:14px">
     <p style="margin:0;font-size:13.5px;color:var(--green-d);line-height:1.5">
       💡 <strong>Qual escolher?</strong> O Triplex tem a frente mais branca e lisa — ideal pra impressão fina e cores vibrantes. O Duplex é mais encorpado e estruturado, ideal pra marcas que querem mais robustez na sacola.
@@ -1901,11 +1901,12 @@ function confirmTamCustom(){
 function stepNumCores(){
   const t=tier();
   const DEFS = {
-    "1/0":      {ex:'Sacola vermelha com logo branca — ainda é 1/0. "1/0" = 1 cor na frente, nenhuma no verso.', quando:"Ótimo pra logotipos simples e marcas minimalistas. Menor custo."},
-    "2/0":      {ex:"Sacola branca com logo em verde E um detalhe laranja — 2 tintas diferentes na arte.",        quando:"Ideal pra marcas com 2 cores no logo ou que querem um pouco mais de destaque."},
-    "4/0":      {ex:"Impressão completa: fotos, degradês, ilustrações coloridas, logo com gradiente.",            quando:"Máxima fidelidade de cor. Indicado pra artes elaboradas e marcas com identidade rica."},
-    "nenhuma":  {ex:"Sacola sem nenhuma impressão. O papel fica no seu estado natural.",                          quando:"Pra quem quer custo mínimo ou vai usar a sacola como embalagem neutra."},
+    "1/0":      {ex:"Logo em uma única cor — ex.: sacola vermelha com logo branca. Impressão frente e verso.", quando:"Ótimo pra logotipos simples e marcas minimalistas. Menor custo."},
+    "2/0":      {ex:"Duas tintas diferentes na arte — ex.: logo em verde com um detalhe laranja. Impressão frente e verso.", quando:"Ideal pra marcas com 2 cores no logo ou que querem um pouco mais de destaque."},
+    "4/0":      {ex:"Impressão completa: fotos, degradês, ilustrações coloridas, logo com gradiente. Frente e verso.", quando:"Máxima fidelidade de cor. Indicado pra artes elaboradas e marcas com identidade rica."},
+    "nenhuma":  {ex:"Sacola sem nenhuma impressão. O papel fica no seu estado natural.", quando:"Pra quem quer custo mínimo ou vai usar a sacola como embalagem neutra."},
   };
+  const LBL = {"1/0":"1 cor","2/0":"2 cores","4/0":"4 cores"};
   const NUMCORES_IMG = {
     "1/0": typeof IMG_NUMCORES_1_0 !== 'undefined' ? IMG_NUMCORES_1_0 : null,
     "2/0": typeof IMG_NUMCORES_2_0 !== 'undefined' ? IMG_NUMCORES_2_0 : null,
@@ -1913,7 +1914,7 @@ function stepNumCores(){
   };
   const opts = t.numCores.map(n=>{
     const d=DEFS[n]||{};
-    const lbl = n==="nenhuma" ? "Nenhuma" : n;
+    const lbl = n==="nenhuma" ? "Nenhuma" : (LBL[n]||n);
     const foto = NUMCORES_IMG[n];
     const ico = foto ? `<img src="${foto}" alt="Exemplo ${lbl}">` : colorIcon(n);
     return `<button class="opt ${S.numCores===n?'sel':''}" onclick="setNumCores('${n}')">
@@ -1926,7 +1927,7 @@ function stepNumCores(){
       <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg></span>
     </button>`;
   });
-  return head("Tipo de impressão","A notação 1/0, 2/0, 4/0 indica quantas tintas vão na arte — independente da cor da sacola.") +
+  return head("Tipo de impressão","Todas as impressões são feitas frente e verso. Escolha quantas cores tem a sua arte — independente da cor da sacola.") +
     `<div class="opts">${opts.join("")}</div>
     <div class="field" style="background:var(--green-soft);border-radius:14px;padding:14px 16px;margin-top:14px">
       <p style="margin:0;font-size:13.5px;color:var(--green-d);line-height:1.5">
@@ -1938,9 +1939,9 @@ function setNumCores(v){ window.__justSelected=true; S.numCores=v; renderStep();
 
 function stepAcab(){
   const ACAB_EX = {
-    lam_fosca:   "Deixa a sacola com toque aveludado e aparência sofisticada. Muito usada em boutiques. Obrigatório escolher 1: fosca, brilho ou verniz.",
-    lam_brilho:  "Realça as cores da impressão e deixa a superfície brilhante. Transmite modernidade. Obrigatório escolher 1: fosca, brilho ou verniz.",
-    verniz:      "Brilho aplicado só em partes da arte — realça o logo ou uma ilustração sem brilhar a sacola toda. Obrigatório escolher 1: fosca, brilho ou verniz.",
+    lam_fosca:   "Deixa a sacola com toque aveludado e aparência sofisticada. Muito usada em boutiques. Obrigatório: escolha fosca ou brilho. A fosca combina com verniz localizado.",
+    lam_brilho:  "Realça as cores da impressão e deixa a superfície brilhante. Transmite modernidade. Obrigatório: escolha fosca ou brilho. O brilho não combina com verniz localizado.",
+    verniz:      "Brilho aplicado só em partes da arte — realça o logo ou uma ilustração sem brilhar a sacola toda. Opcional — disponível junto com a laminação fosca.",
     hot_dourado: "Camada metalizada dourada aplicada sobre a arte. Efeito premium na logo ou em detalhes. Opcional — pode escolher dourado, prata ou nenhum.",
     hot_prata:   "Camada metalizada prateada aplicada sobre a arte. Efeito premium na logo ou em detalhes. Opcional — pode escolher dourado, prata ou nenhum.",
   };
@@ -1955,12 +1956,13 @@ function stepAcab(){
   if(!S.acab.some(a=>ACAB_GRUPO_LAM.includes(a))){
     S.acab.push("lam_fosca");
   }
-  return head("Acabamentos","Escolha uma opção de laminação ou verniz localizado (obrigatório) e, se quiser, uma opção de hot stamping (opcional — dourado ou prata).") +
+  return head("Acabamentos","A laminação fosca já vem selecionada. Você pode trocar por brilho e, se quiser, adicionar verniz localizado (só com a fosca) e um hot stamping (dourado ou prata).") +
   `<div class="opts" role="radiogroup">`+ ACABAMENTOS.map(a=>{
     const sel=S.acab.includes(a.id);
+    const dis = a.id==="verniz" && S.acab.includes("lam_brilho");
     const img = ACAB_IMG[a.id];
     const ico = img ? `<img src="${img}" alt="${a.nome}">` : finishIcon(a.id);
-    return `<button class="opt ${sel?'sel':''}" onclick="toggleAcab('${a.id}')">
+    return `<button class="opt ${sel?'sel':''} ${dis?'dis':''}" onclick="toggleAcab('${a.id}')" ${dis?'aria-disabled="true"':''}>
       <span class="ico">${ico}</span>
       <span class="txt">
         <span class="t">${a.nome}</span>
@@ -1970,20 +1972,24 @@ function stepAcab(){
     </button>`;
   }).join("")+`</div>`;
 }
-const ACAB_GRUPO_LAM = ["lam_fosca","lam_brilho","verniz"];
+const ACAB_GRUPO_LAM = ["lam_fosca","lam_brilho"];
 const ACAB_GRUPO_HOT = ["hot_dourado","hot_prata"];
 function toggleAcab(id){
   if(S.acab.includes(id)){
     if(ACAB_GRUPO_LAM.includes(id)){
-      // Laminação/verniz é obrigatório: não permite ficar sem nenhuma opção do grupo selecionada.
-      // Pra trocar, o cliente clica em outra opção de laminação/verniz.
+      // Laminação (fosca ou brilho) é obrigatória: não permite ficar sem nenhuma das duas.
+      // Pra trocar, o cliente clica na outra opção de laminação.
       return;
     }
     S.acab = S.acab.filter(x=>x!==id);
   } else {
-    // Dentro do mesmo grupo (laminação/verniz OU hot stamping), só pode ter 1 selecionado por vez
+    // Verniz localizado só combina com laminação fosca
+    if(id==="verniz" && S.acab.includes("lam_brilho")) return;
+    // Dentro do mesmo grupo (laminação OU hot stamping), só pode ter 1 selecionado por vez
     if(ACAB_GRUPO_LAM.includes(id)) S.acab = S.acab.filter(x=>!ACAB_GRUPO_LAM.includes(x));
     if(ACAB_GRUPO_HOT.includes(id)) S.acab = S.acab.filter(x=>!ACAB_GRUPO_HOT.includes(x));
+    // Ao escolher laminação brilho, remove o verniz (não combinam)
+    if(id==="lam_brilho") S.acab = S.acab.filter(x=>x!=="verniz");
     S.acab.push(id);
   }
   renderStep();
@@ -2244,10 +2250,29 @@ function opt(sel,act,ico,t,d,badge=""){
 }
 function miniCheck(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>`; }
 function modName(id){ return (TIERS.find(t=>t.id===id)||{}).nome||"—"; }
-function modFull(id){ const t=TIERS.find(x=>x.id===id); return t?(t.sub?`${t.nome} (${t.sub})`:t.nome):"—"; }
+/* Gramatura dinâmica: a partir do tamanho G, o papel sobe de gramatura */
+function isTamG(){
+  if(S.tam==="custom" && S.tamCustom) return (S.tamCustom.l>=32 || S.tamCustom.a>=40);
+  return ["g1","gg"].includes(S.tam);
+}
+function gramaturaDesc(id){
+  if(id==="basico") return "Kraft 150g";
+  if(id==="intermediario") return `Offset ${isTamG()?"240g":"180g"}`;
+  if(id==="premium") return S.mat==="duplex" ? "Duplex 240g" : `Triplex ${isTamG()?"250g":"210g"}`;
+  return "";
+}
+function modFull(id){
+  const t=TIERS.find(x=>x.id===id); if(!t) return "—";
+  const sub = (id===S.mod && S.tam) ? gramaturaDesc(id) : t.sub;
+  return sub?`${t.nome} (${sub})`:t.nome;
+}
 function alcaName(id){ return (ALCAS.find(a=>a.id===id)||{}).nome||"—"; }
 function matName(){ return (MATERIAIS.find(m=>m.id===S.mat)||{}).nome||"a definir"; }
-function matNameSimple(){ const m=MATERIAIS.find(m=>m.id===S.mat); return m?(m.nomeSimples||m.nome):"a definir"; }
+function matNameSimple(){
+  const m=MATERIAIS.find(m=>m.id===S.mat); if(!m) return "a definir";
+  if(m.id==="triplex") return `Triplex ${isTamG()?"250g":"210g"}`;
+  return m.nome;
+}
 function acabNames(){ return S.acab.map(a=>(ACABAMENTOS.find(x=>x.id===a)||{}).nome).join(", "); }
 function tamName(){
   if(S.tam==="custom" && S.tamCustom) return `Personalizada — ${medStr(S.tamCustom)}`;
@@ -2257,7 +2282,7 @@ function coresTxt(){
   if(!S.numCores) return null;
   if(S.numCores==="nenhuma") return "Sem impressão";
   const NC={"1/0":"1 cor","2/0":"2 cores","4/0":"4 cores (colorida)"};
-  return `${S.numCores}${NC[S.numCores]?" — "+NC[S.numCores]:""}`;
+  return `${NC[S.numCores]||S.numCores} — frente e verso`;
 }
 function coresLine(){
   const txt=coresTxt();
