@@ -2267,7 +2267,11 @@ function modFull(id){
   return sub?`${t.nome} (${sub})`:t.nome;
 }
 function alcaName(id){ return (ALCAS.find(a=>a.id===id)||{}).nome||"—"; }
-function matName(){ return (MATERIAIS.find(m=>m.id===S.mat)||{}).nome||"a definir"; }
+function matName(){
+  const m=MATERIAIS.find(m=>m.id===S.mat); if(!m) return "a definir";
+  if(m.id==="triplex") return `Triplex ${isTamG()?"250g":"210g"}`;
+  return m.nome;
+}
 function matNameSimple(){
   const m=MATERIAIS.find(m=>m.id===S.mat); if(!m) return "a definir";
   if(m.id==="triplex") return `Triplex ${isTamG()?"250g":"210g"}`;
