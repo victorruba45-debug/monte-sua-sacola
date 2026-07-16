@@ -1185,17 +1185,17 @@ body{overscroll-behavior-y:contain}
 .port-hd h2{font-size:clamp(24px,4.5vw,36px);letter-spacing:-0.03em;margin-bottom:10px}
 .port-hd p{color:var(--ink-soft);font-size:14px;line-height:1.65;margin:0}
 .port-marquee{
-  width:100%;overflow-x:auto;overflow-y:hidden;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
+  width:100%;overflow:hidden;
   cursor:grab;
+  touch-action:pan-y; /* arrastar na horizontal; rolar a página na vertical */
 }
-.port-marquee::-webkit-scrollbar{display:none}
 .port-marquee.dragging{cursor:grabbing}
 .port-track{
   display:flex;gap:20px;width:max-content;
   padding:10px 0;
+  will-change:transform;
 }
+.port-track img{pointer-events:none;-webkit-user-drag:none;user-select:none}
 .port-item{
   flex:0 0 300px;height:400px;
   position:relative;border-radius:22px;overflow:hidden;
@@ -1214,13 +1214,12 @@ body{overscroll-behavior-y:contain}
 .port-item:hover .port-over{opacity:1}
 .port-t{color:#fff;font-family:"Syne",sans-serif;font-size:16px;font-weight:700;letter-spacing:-.4px}
 .port-c{color:rgba(255,255,255,.72);font-size:12px;margin-top:5px}
-@media(max-width:850px){.port-item{flex:0 0 260px;height:340px}.port-track{animation-duration:48s}}
+@media(max-width:850px){.port-item{flex:0 0 260px;height:340px}}
 @media(max-width:580px){
   .port-item{flex:0 0 220px;height:290px}
-  .port-track{gap:14px;animation-duration:40s}
-  .portfolio-sec{padding:52px 0 46px;margin-top:56px}
-  /* No toque, o overlay aparece sempre (não há hover no celular) */
-  .port-over{opacity:1;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 46%)}
+  .port-track{gap:14px}
+  /* Como no PrismaPrints: no celular as fotos aparecem limpas, sem texto */
+  .port-over{display:none}
 }
 
 /* ── Hero compacto no celular: o portfólio aparece logo de cara ── */
@@ -1401,29 +1400,42 @@ main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)
     </div>
   </section>
   <script>
-  /* Carrossel do portfólio: anda sozinho e aceita arraste (dedo/mouse) */
+  /* Carrossel do portfólio — mesma dinâmica do PrismaPrints:
+     movimento contínuo por transform (suave) + arraste com dedo ou mouse */
   (function(){
     const mq = document.getElementById('portMarquee');
-    if(!mq) return;
+    const track = document.getElementById('portTrack');
+    if(!mq || !track) return;
+    let pos = 0, half = 0, down = false, startX = 0, startPos = 0;
     let pauseUntil = 0;
+    const AUTO = 0.55; // px por frame (~33px/s)
     const hold = ms => { pauseUntil = Date.now() + ms; };
-    // Toque: pausa enquanto interage, retoma 2s depois de soltar
-    mq.addEventListener('touchstart', () => hold(600000), {passive:true});
-    mq.addEventListener('touchend',   () => hold(2000),   {passive:true});
-    // Mouse: pausa no hover, arraste com o botão pressionado
-    mq.addEventListener('mouseenter', () => hold(600000));
-    mq.addEventListener('mouseleave', () => hold(800));
-    let dragging=false, dragX=0, dragScroll=0;
-    mq.addEventListener('mousedown', e => { dragging=true; dragX=e.pageX; dragScroll=mq.scrollLeft; mq.classList.add('dragging'); });
-    window.addEventListener('mousemove', e => { if(dragging){ mq.scrollLeft = dragScroll - (e.pageX - dragX); } });
-    window.addEventListener('mouseup', () => { dragging=false; mq.classList.remove('dragging'); });
+    const measure = () => { half = track.scrollWidth / 2; };
+    window.addEventListener('load', measure);
+    window.addEventListener('resize', measure);
+    measure();
+    // Arraste unificado (toque e mouse)
+    mq.addEventListener('pointerdown', e => {
+      down = true; startX = e.clientX; startPos = pos;
+      hold(600000); mq.classList.add('dragging');
+    });
+    window.addEventListener('pointermove', e => {
+      if(down) pos = startPos - (e.clientX - startX);
+    });
+    const release = () => { if(down){ down = false; mq.classList.remove('dragging'); } hold(1600); };
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+    // Pausa no hover — só em aparelhos com mouse
+    if(window.matchMedia('(hover:hover)').matches){
+      mq.addEventListener('mouseenter', () => hold(600000));
+      mq.addEventListener('mouseleave', () => hold(0));
+    }
     function loop(){
-      const half = mq.scrollWidth / 2;
       if(half > 0){
-        if(Date.now() > pauseUntil) mq.scrollLeft += 0.7;
-        if(mq.scrollLeft >= half) mq.scrollLeft -= half;
-        else if(mq.scrollLeft <= 0 && pauseUntil > Date.now()) mq.scrollLeft += half;
-      }
+        if(!down && Date.now() > pauseUntil) pos += AUTO;
+        if(pos >= half) pos -= half; else if(pos < 0) pos += half;
+        track.style.transform = 'translate3d(' + (-pos) + 'px,0,0)';
+      } else { measure(); }
       requestAnimationFrame(loop);
     }
     loop();
