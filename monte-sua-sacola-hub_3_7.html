@@ -1169,6 +1169,57 @@ body{overscroll-behavior-y:contain}
 .opt.dis{opacity:.42;cursor:not-allowed}
 .opt.dis:hover{transform:none;box-shadow:none;border-color:var(--line)}
 
+/* ── Portfólio (carrossel contínuo, padrão PrismaPrints) ── */
+.portfolio-sec{
+  width:100vw;margin-left:calc(50% - 50vw);
+  padding:72px 0 64px;margin-top:72px;
+  background:var(--paper);border-top:1px solid var(--line);
+  overflow:hidden;
+}
+.port-hd{text-align:center;max-width:560px;margin:0 auto 44px;padding:0 24px}
+.port-tag{
+  display:inline-block;background:var(--bg-2);border:1px solid var(--line);
+  border-radius:999px;padding:4px 14px;font-size:11px;color:var(--ink-soft);
+  letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px;font-weight:600;
+}
+.port-hd h2{font-size:clamp(24px,4.5vw,36px);letter-spacing:-0.03em;margin-bottom:10px}
+.port-hd p{color:var(--ink-soft);font-size:14px;line-height:1.65;margin:0}
+.port-marquee{width:100%;overflow:hidden}
+.port-track{
+  display:flex;gap:20px;width:fit-content;
+  padding:10px 0;
+  animation:portScroll 60s linear infinite;
+  will-change:transform;
+}
+.port-marquee:hover .port-track{animation-play-state:paused}
+@keyframes portScroll{to{transform:translateX(-50%)}}
+.port-item{
+  flex:0 0 300px;height:400px;
+  position:relative;border-radius:22px;overflow:hidden;
+  background:var(--bg-2);border:1px solid var(--line);
+  transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s cubic-bezier(.22,1,.36,1);
+}
+.port-item img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,0,.2,1)}
+.port-item:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(0,0,0,.12)}
+.port-item:hover img{transform:scale(1.08)}
+.port-over{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.82) 0%,transparent 58%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:24px;
+  opacity:0;transition:opacity .4s ease;pointer-events:none;
+}
+.port-item:hover .port-over{opacity:1}
+.port-t{color:#fff;font-family:"Syne",sans-serif;font-size:16px;font-weight:700;letter-spacing:-.4px}
+.port-c{color:rgba(255,255,255,.72);font-size:12px;margin-top:5px}
+@media(max-width:850px){.port-item{flex:0 0 260px;height:340px}.port-track{animation-duration:48s}}
+@media(max-width:580px){
+  .port-item{flex:0 0 220px;height:290px}
+  .port-track{gap:14px;animation-duration:40s}
+  .portfolio-sec{padding:52px 0 46px;margin-top:56px}
+  /* No toque, o overlay aparece sempre (não há hover no celular) */
+  .port-over{opacity:1;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 46%)}
+}
+
 /* ── Transições refinadas (curva única e suave em tudo) ── */
 main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
 #stepHost.anim-step,.anim-step{animation:stepFade .5s cubic-bezier(.22,1,.36,1)}
@@ -1293,6 +1344,45 @@ main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)
       <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>Sem compromisso</span>
       <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Pronto em 1 minuto</span>
       <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2z"/></svg>Resposta pelo WhatsApp</span>
+    </div>
+  </section>
+
+  <!-- ════════════ PORTFÓLIO ════════════ -->
+  <section class="portfolio-sec" aria-label="Portfólio de projetos">
+    <div class="port-hd">
+      <span class="port-tag">Nosso Trabalho</span>
+      <h2>Portfólio de Projetos</h2>
+      <p>Conheça algumas das soluções que entregamos para nossos clientes.<br>Qualidade que você pode ver e sentir.</p>
+    </div>
+    <div class="port-marquee">
+      <div class="port-track">
+        <div class="port-item"><img src="./imagens/Portifolio/marca1.png" alt="Sacola personalizada de luxo com acabamento premium" loading="lazy"><div class="port-over"><div class="port-t">Projeto Exclusivo</div><div class="port-c">Impressão de Alta Fidelidade</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca2.png" alt="Embalagem premium personalizada para marcas de moda" loading="lazy"><div class="port-over"><div class="port-t">Embalagem Premium</div><div class="port-c">Design e Sofisticação</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca3.png" alt="Sacola de papel com design sob medida e acabamento refinado" loading="lazy"><div class="port-over"><div class="port-t">Solução sob Medida</div><div class="port-c">Acabamento Refinado</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca4.png" alt="Identidade visual aplicada em embalagens personalizadas" loading="lazy"><div class="port-over"><div class="port-t">Identidade Visual</div><div class="port-c">Qualidade que aparece</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca5.png" alt="Sacola com cores vibrantes e impressão offset de alta qualidade" loading="lazy"><div class="port-over"><div class="port-t">Projeto Especial</div><div class="port-c">Cores Vibrantes</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca6.png" alt="Sacola personalizada resistente para eventos e varejo" loading="lazy"><div class="port-over"><div class="port-t">Sacola Personalizada</div><div class="port-c">Material Resistente</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca7.png" alt="Soluções de branding através de embalagens personalizadas" loading="lazy"><div class="port-over"><div class="port-t">Branding e Embalagem</div><div class="port-c">Valorizando sua marca</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca8.png" alt="Linha corporativa de sacolas personalizadas" loading="lazy"><div class="port-over"><div class="port-t">Linha Corporativa</div><div class="port-c">Impressão Silk/Offset</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca9.png" alt="Detalhes de acabamento em sacolas de papel personalizadas" loading="lazy"><div class="port-over"><div class="port-t">Detalhes Únicos</div><div class="port-c">Produção em Escala</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca10.png" alt="Sacola de papel sustentável com design inovador" loading="lazy"><div class="port-over"><div class="port-t">Inovação em Papel</div><div class="port-c">Sustentabilidade e Estilo</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca11.png" alt="Acabamento diferenciado em sacolas premium para joalherias" loading="lazy"><div class="port-over"><div class="port-t">Acabamento Diferenciado</div><div class="port-c">Luxo em cada detalhe</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca12.png" alt="Sacolas de papel de alto padrão para marcas exclusivas" loading="lazy"><div class="port-over"><div class="port-t">Sacolas de Alto Padrão</div><div class="port-c">Resistência e Beleza</div></div></div>
+        <div class="port-item"><img src="./imagens/Portifolio/marca13.png" alt="Produção premium de sacolas personalizadas" loading="lazy"><div class="port-over"><div class="port-t">Produção Premium</div><div class="port-c">O melhor para sua empresa</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca1.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Projeto Exclusivo</div><div class="port-c">Impressão de Alta Fidelidade</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca2.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Embalagem Premium</div><div class="port-c">Design e Sofisticação</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca3.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Solução sob Medida</div><div class="port-c">Acabamento Refinado</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca4.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Identidade Visual</div><div class="port-c">Qualidade que aparece</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca5.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Projeto Especial</div><div class="port-c">Cores Vibrantes</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca6.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Sacola Personalizada</div><div class="port-c">Material Resistente</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca7.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Branding e Embalagem</div><div class="port-c">Valorizando sua marca</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca8.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Linha Corporativa</div><div class="port-c">Impressão Silk/Offset</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca9.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Detalhes Únicos</div><div class="port-c">Produção em Escala</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca10.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Inovação em Papel</div><div class="port-c">Sustentabilidade e Estilo</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca11.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Acabamento Diferenciado</div><div class="port-c">Luxo em cada detalhe</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca12.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Sacolas de Alto Padrão</div><div class="port-c">Resistência e Beleza</div></div></div>
+        <div class="port-item" aria-hidden="true"><img src="./imagens/Portifolio/marca13.png" alt="" loading="lazy"><div class="port-over"><div class="port-t">Produção Premium</div><div class="port-c">O melhor para sua empresa</div></div></div>
+      </div>
     </div>
   </section>
 
