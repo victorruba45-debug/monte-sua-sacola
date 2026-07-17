@@ -4,6 +4,18 @@
     {
       "source": "/",
       "destination": "/monte-sua-sacola-hub_3_7"
+    },
+    {
+      "source": "/plastica",
+      "destination": "/monte-sua-sacola-hub_3_7"
+    },
+    {
+      "source": "/tnt",
+      "destination": "/monte-sua-sacola-hub_3_7"
+    },
+    {
+      "source": "/ecobag",
+      "destination": "/monte-sua-sacola-hub_3_7"
     }
   ],
   "cleanUrls": true,

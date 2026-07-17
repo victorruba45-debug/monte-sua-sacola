@@ -141,7 +141,7 @@ input,select,textarea{font-family:inherit}
 .hero{
   width:100vw;margin-left:calc(50% - 50vw);
   background:var(--ink);
-  padding:clamp(64px,10vw,104px) 24px clamp(48px,6vw,72px);
+  padding:clamp(36px,6vw,64px) 24px clamp(28px,4vw,44px);
   text-align:center;
   position:relative;overflow:hidden;
 }
@@ -156,15 +156,15 @@ input,select,textarea{font-family:inherit}
   background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);
   color:#aaa;letter-spacing:.4px;
   padding:7px 16px;border-radius:999px;
-  margin-bottom:28px;
+  margin-bottom:18px;
   animation:fadeDown .7s var(--ease-out) both;
 }
 .hero .eyebrow svg{color:var(--gn);animation:pulseDot 2s infinite}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
 .hero h1{
-  font-size:clamp(33px,7vw,58px);
+  font-size:clamp(30px,5.2vw,46px);
   max-width:720px;
-  margin:0 auto 22px;
+  margin:0 auto 16px;
   letter-spacing:-0.04em;
   font-weight:800;color:#fff;
   line-height:1.06;
@@ -215,7 +215,7 @@ input,select,textarea{font-family:inherit}
 /* Two path cards — grid fluido, sem cards órfãos */
 .paths{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;
-  margin:44px auto 0;max-width:680px;
+  margin:28px auto 0;max-width:680px;
   animation:fadeUp .7s var(--ease-out) .18s both;
 }
 .path-card{
@@ -252,7 +252,7 @@ input,select,textarea{font-family:inherit}
 
 .trust-row{
   display:flex;flex-wrap:wrap;justify-content:center;gap:12px 28px;
-  margin-top:48px;padding-top:34px;
+  margin-top:26px;padding-top:20px;
   border-top:1px solid rgba(255,255,255,.08);
   animation:fadeUp .7s var(--ease-out) .26s both;
 }
@@ -1172,11 +1172,11 @@ body{overscroll-behavior-y:contain}
 /* ── Portfólio (carrossel contínuo, padrão PrismaPrints) ── */
 .portfolio-sec{
   width:100vw;margin-left:calc(50% - 50vw);
-  padding:64px 0 56px;margin-top:0;
+  padding:44px 0 48px;margin-top:0;
   background:var(--paper);
   overflow:hidden;
 }
-.port-hd{text-align:center;max-width:560px;margin:0 auto 44px;padding:0 24px}
+.port-hd{text-align:center;max-width:560px;margin:0 auto 28px;padding:0 24px}
 .port-tag{
   display:inline-block;background:var(--bg-2);border:1px solid var(--line);
   border-radius:999px;padding:4px 14px;font-size:11px;color:var(--ink-soft);
@@ -1216,8 +1216,8 @@ body{overscroll-behavior-y:contain}
 .port-c{color:rgba(255,255,255,.72);font-size:12px;margin-top:5px}
 @media(max-width:850px){.port-item{flex:0 0 260px;height:340px}}
 @media(max-width:580px){
-  .port-item{flex:0 0 220px;height:290px}
-  .port-track{gap:14px}
+  .port-item{flex:0 0 195px;height:255px}
+  .port-track{gap:12px}
   /* Como no PrismaPrints: no celular as fotos aparecem limpas, sem texto */
   .port-over{display:none}
 }
@@ -1228,25 +1228,54 @@ body{overscroll-behavior-y:contain}
 
 /* ── Mobile: portfólio visível já na primeira tela (validação imediata) ── */
 @media(max-width:700px){
-  .hero{padding:30px 20px 22px}
-  .hero .eyebrow{margin-bottom:14px;padding:6px 13px;font-size:11px}
-  .hero h1{font-size:clamp(26px,7.5vw,34px);margin-bottom:0}
-  .hero > p{display:none}      /* texto longo sai; entra a versão curta abaixo */
+  .hero{padding:22px 20px 18px}
+  .hero .eyebrow{display:none}   /* o selo sai: o título já diz tudo */
+  .hero h1{font-size:clamp(24px,6.8vw,30px);margin-bottom:0;letter-spacing:-0.03em}
+  .hero > p{display:none}        /* texto longo sai; entra a versão curta abaixo */
   .hero > p.hero-mobile-sub{
-    display:block;color:#8a8a8a;font-size:13.5px;line-height:1.5;
-    margin:10px auto 0;max-width:310px;
+    display:block;color:#8a8a8a;font-size:13px;line-height:1.5;
+    margin:8px auto 0;max-width:310px;
     animation:fadeUp .7s var(--ease-out) .12s both;
   }
-  .paths{margin-top:16px}
-  .path-card{padding:15px 16px}
-  .trust-row{margin-top:18px;padding-top:14px;gap:6px 14px}
+  .paths{margin-top:14px}
+  .path-card{padding:13px 15px;gap:12px}
+  .path-ico{width:44px;height:44px;font-size:1.4rem}
+  .path-body strong{font-size:.98rem}
+  .path-body span{font-size:.78rem}
+  .trust-row{margin-top:14px;padding-top:12px;gap:6px 16px}
   .trust{font-size:.7rem;letter-spacing:.2px}
   .trust svg{width:13px;height:13px}
-  .portfolio-sec{padding:26px 0 40px}
-  .port-hd{margin-bottom:16px}
-  .port-hd h2{font-size:22px}
-  .port-hd p{display:none}     /* descrição longa sai; entra a curta */
-  .port-hd p.port-mobile-sub{display:block;color:var(--ink-soft);font-size:12.5px;margin:6px auto 0}
+  /* "Pronto em 1 minuto" é redundante com a frase do hero — sai no celular */
+  .trust-row .trust:nth-child(2){display:none}
+  .portfolio-sec{padding:20px 0 36px}
+  .port-tag{display:none}
+  .port-hd{margin-bottom:14px;padding:0 20px}
+  .port-hd h2{font-size:21px}
+  .port-hd p{display:none}       /* descrição longa sai; entra a curta */
+  .port-hd p.port-mobile-sub{display:block;color:var(--ink-soft);font-size:12.5px;margin:5px auto 0}
+}
+
+/* ── Telas baixas (celular deitado): hero mínimo, fotos na hora ── */
+@media(max-height:520px) and (min-width:500px){
+  .hero{padding:16px 20px 14px}
+  .hero .eyebrow{display:none}
+  .hero h1{font-size:22px;margin-bottom:0;max-width:560px}
+  .hero > p{display:none}
+  .hero > p.hero-mobile-sub{display:block;color:#8a8a8a;font-size:12px;margin:6px auto 0}
+  .paths{margin-top:10px;max-width:520px}
+  .path-card{padding:10px 14px;gap:10px}
+  .path-ico{width:38px;height:38px;font-size:1.2rem}
+  .path-body strong{font-size:.9rem}
+  .path-body span{display:none}
+  .trust-row{display:none}
+  .portfolio-sec{padding:14px 0 22px}
+  .port-tag{display:none}
+  .port-hd{margin-bottom:10px}
+  .port-hd h2{font-size:18px}
+  .port-hd p{display:none}
+  .port-hd p.port-mobile-sub{display:block;color:var(--ink-soft);font-size:11.5px;margin:4px auto 0}
+  .port-item{flex:0 0 150px;height:195px}
+  .port-track{gap:12px}
 }
 
 /* ── Hero compacto no celular: o portfólio aparece logo de cara ── */
@@ -1353,9 +1382,17 @@ main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)
       <span class="drawer-item-ico">📄</span>
       <span class="drawer-item-txt"><strong>Sacola de Papel</strong><span>Monte sua sacola personalizada</span></span>
     </button>
-    <button class="drawer-item" id="tabBtn-p2" onclick="openTab('p2')">
+    <button class="drawer-item" id="tabBtn-plastica" onclick="openTipo('plastica')">
       <span class="drawer-item-ico">🛍️</span>
-      <span class="drawer-item-txt"><strong>Plástica · TNT · Eco Bag</strong><span>Outros tipos de sacola</span></span>
+      <span class="drawer-item-txt"><strong>Sacola Plástica</strong><span>Alça vazada ou camiseta, resistente</span></span>
+    </button>
+    <button class="drawer-item" id="tabBtn-tnt" onclick="openTipo('tnt')">
+      <span class="drawer-item-ico">👜</span>
+      <span class="drawer-item-txt"><strong>Sacola TNT</strong><span>Tecido não-tecido, leve e reutilizável</span></span>
+    </button>
+    <button class="drawer-item" id="tabBtn-ecobag" onclick="openTipo('ecobag')">
+      <span class="drawer-item-ico">🌿</span>
+      <span class="drawer-item-txt"><strong>Eco Bag</strong><span>Ecológica e durável, cara de marca</span></span>
     </button>
   </nav>
 </aside>
@@ -2613,9 +2650,25 @@ function closeDrawer(){
   document.getElementById('tabDrawer').classList.remove('open');
   document.getElementById('hamburgerBtn').setAttribute('aria-expanded','false');
 }
+let currentTipoP2 = null; // qual tipo está ativo dentro do módulo P2
 function updateTabActiveState(){
   document.getElementById('tabBtn-papel').classList.toggle('active', currentTab==='papel');
-  document.getElementById('tabBtn-p2').classList.toggle('active', currentTab==='p2');
+  ['plastica','tnt','ecobag'].forEach(function(t){
+    const el = document.getElementById('tabBtn-'+t);
+    if(el) el.classList.toggle('active', currentTab==='p2' && currentTipoP2===t);
+  });
+}
+/* Abre direto um tipo (aba própria: Plástica, TNT ou Eco Bag) */
+function openTipo(tipo){
+  if(currentTab === 'p2' && currentTipoP2 === tipo){ closeDrawer(); return; }
+  currentTipoP2 = tipo;
+  if(currentTab !== 'p2'){
+    openTab('p2');
+  } else {
+    closeDrawer();
+    window.scrollTo(0,0);
+  }
+  P2.pickTipo(tipo);
 }
 function openTab(tab){
   if (tab === currentTab) { closeDrawer(); return; }
@@ -3280,5 +3333,27 @@ window.P2 = {
 })();
 </script>
 
+<script>
+/* ── Links diretos por tipo de sacola ──
+   /plastica → Sacola Plástica  ·  /tnt → Sacola TNT  ·  /ecobag → Eco Bag
+   (também funcionam #plastica / ?aba=plastica etc.) */
+window.addEventListener('load', function(){
+  try{
+    // Mantém a aba do menu sincronizada quando o tipo é escolhido
+    // por dentro da página (tela "Qual sacola você quer orçar hoje?")
+    if(window.P2 && P2.pickTipo){
+      const _pick = P2.pickTipo;
+      P2.pickTipo = function(k){ currentTipoP2 = k; return _pick(k); };
+    }
+    const q = new URLSearchParams(location.search);
+    const caminho = (location.pathname.replace(/\/+$/,'').split('/').pop() || '').toLowerCase();
+    const hash = (location.hash || '').replace('#','').toLowerCase();
+    const aba = (q.get('aba') || '').toLowerCase();
+    const MAPA = {plastica:'plastica','plástica':'plastica',tnt:'tnt',ecobag:'ecobag'};
+    const tipo = MAPA[caminho] || MAPA[hash] || MAPA[aba];
+    if(tipo) openTipo(tipo);
+  }catch(e){}
+});
+</script>
 </body>
 </html>
