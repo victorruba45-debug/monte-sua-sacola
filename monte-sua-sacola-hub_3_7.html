@@ -1228,29 +1228,29 @@ body{overscroll-behavior-y:contain}
 
 /* ── Mobile: portfólio visível já na primeira tela (validação imediata) ── */
 @media(max-width:700px){
-  .hero{padding:22px 20px 18px}
+  .hero{padding:16px 20px 13px}
   .hero .eyebrow{display:none}   /* o selo sai: o título já diz tudo */
-  .hero h1{font-size:clamp(24px,6.8vw,30px);margin-bottom:0;letter-spacing:-0.03em}
+  .hero h1{font-size:clamp(22px,6.2vw,27px);margin-bottom:0;letter-spacing:-0.03em}
   .hero > p{display:none}        /* texto longo sai; entra a versão curta abaixo */
   .hero > p.hero-mobile-sub{
-    display:block;color:#8a8a8a;font-size:13px;line-height:1.5;
-    margin:8px auto 0;max-width:310px;
+    display:block;color:#8a8a8a;font-size:12.5px;line-height:1.45;
+    margin:6px auto 0;max-width:310px;
     animation:fadeUp .7s var(--ease-out) .12s both;
   }
-  .paths{margin-top:14px}
-  .path-card{padding:13px 15px;gap:12px}
-  .path-ico{width:44px;height:44px;font-size:1.4rem}
-  .path-body strong{font-size:.98rem}
-  .path-body span{font-size:.78rem}
-  .trust-row{margin-top:14px;padding-top:12px;gap:6px 16px}
-  .trust{font-size:.7rem;letter-spacing:.2px}
-  .trust svg{width:13px;height:13px}
+  .paths{margin-top:10px}
+  .path-card{padding:11px 14px;gap:11px}
+  .path-ico{width:40px;height:40px;font-size:1.3rem}
+  .path-body strong{font-size:.95rem}
+  .path-body span{font-size:.76rem}
+  .trust-row{margin-top:10px;padding-top:9px;gap:5px 14px}
+  .trust{font-size:.68rem;letter-spacing:.2px}
+  .trust svg{width:12px;height:12px}
   /* "Pronto em 1 minuto" é redundante com a frase do hero — sai no celular */
   .trust-row .trust:nth-child(2){display:none}
-  .portfolio-sec{padding:20px 0 36px}
+  .portfolio-sec{padding:14px 0 32px}
   .port-tag{display:none}
-  .port-hd{margin-bottom:14px;padding:0 20px}
-  .port-hd h2{font-size:21px}
+  .port-hd{margin-bottom:10px;padding:0 20px}
+  .port-hd h2{font-size:20px}
   .port-hd p{display:none}       /* descrição longa sai; entra a curta */
   .port-hd p.port-mobile-sub{display:block;color:var(--ink-soft);font-size:12.5px;margin:5px auto 0}
 }
