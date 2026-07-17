@@ -1222,6 +1222,33 @@ body{overscroll-behavior-y:contain}
   .port-over{display:none}
 }
 
+/* Textos curtos exclusivos do celular (escondidos no desktop) */
+.hero-mobile-sub{display:none}
+.port-mobile-sub{display:none}
+
+/* ── Mobile: portfólio visível já na primeira tela (validação imediata) ── */
+@media(max-width:700px){
+  .hero{padding:30px 20px 22px}
+  .hero .eyebrow{margin-bottom:14px;padding:6px 13px;font-size:11px}
+  .hero h1{font-size:clamp(26px,7.5vw,34px);margin-bottom:0}
+  .hero > p{display:none}      /* texto longo sai; entra a versão curta abaixo */
+  .hero > p.hero-mobile-sub{
+    display:block;color:#8a8a8a;font-size:13.5px;line-height:1.5;
+    margin:10px auto 0;max-width:310px;
+    animation:fadeUp .7s var(--ease-out) .12s both;
+  }
+  .paths{margin-top:16px}
+  .path-card{padding:15px 16px}
+  .trust-row{margin-top:18px;padding-top:14px;gap:6px 14px}
+  .trust{font-size:.7rem;letter-spacing:.2px}
+  .trust svg{width:13px;height:13px}
+  .portfolio-sec{padding:26px 0 40px}
+  .port-hd{margin-bottom:16px}
+  .port-hd h2{font-size:22px}
+  .port-hd p{display:none}     /* descrição longa sai; entra a curta */
+  .port-hd p.port-mobile-sub{display:block;color:var(--ink-soft);font-size:12.5px;margin:6px auto 0}
+}
+
 /* ── Hero compacto no celular: o portfólio aparece logo de cara ── */
 @media(max-width:700px){
   .hero{padding:42px 20px 28px}
@@ -1344,6 +1371,7 @@ main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)
     </p>
     <h1>Monte a sua sacola e receba o <em>orçamento na hora</em>.</h1>
     <p>Escolha um dos nossos modelos pra começar rápido ou monte do zero. Em menos de um minuto sua sacola fica pronta e você volta pro WhatsApp com tudo certinho.</p>
+    <p class="hero-mobile-sub">Monte em 1 minuto e receba o orçamento no WhatsApp.</p>
     <div class="paths">
       <button class="path-card path-custom" onclick="startFromScratch()">
         <span class="path-ico">✏️</span>
@@ -1367,6 +1395,7 @@ main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)
       <span class="port-tag">Nosso Trabalho</span>
       <h2>Portfólio de Projetos</h2>
       <p>Conheça algumas das soluções que entregamos para nossos clientes.<br>Qualidade que você pode ver e sentir.</p>
+      <p class="port-mobile-sub">Projetos reais entregues para clientes em todo o Brasil.</p>
     </div>
     <div class="port-marquee" id="portMarquee">
       <div class="port-track" id="portTrack">
@@ -1406,33 +1435,32 @@ main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)
     const mq = document.getElementById('portMarquee');
     const track = document.getElementById('portTrack');
     if(!mq || !track) return;
-    let pos = 0, half = 0, down = false, startX = 0, startPos = 0;
-    let pauseUntil = 0;
-    const AUTO = 0.55; // px por frame (~33px/s)
-    const hold = ms => { pauseUntil = Date.now() + ms; };
+    let pos = 0, half = 0, down = false, hovering = false, startX = 0, startPos = 0;
+    const AUTO = 0.8; // px por frame (~48px/s)
     const measure = () => { half = track.scrollWidth / 2; };
     window.addEventListener('load', measure);
     window.addEventListener('resize', measure);
     measure();
-    // Arraste unificado (toque e mouse)
+    // Arraste unificado (toque e mouse): pausa SÓ enquanto o dedo/botão está
+    // pressionado; ao soltar, o movimento retoma imediatamente
     mq.addEventListener('pointerdown', e => {
       down = true; startX = e.clientX; startPos = pos;
-      hold(600000); mq.classList.add('dragging');
+      mq.classList.add('dragging');
     });
     window.addEventListener('pointermove', e => {
       if(down) pos = startPos - (e.clientX - startX);
     });
-    const release = () => { if(down){ down = false; mq.classList.remove('dragging'); } hold(1600); };
+    const release = () => { down = false; mq.classList.remove('dragging'); };
     window.addEventListener('pointerup', release);
     window.addEventListener('pointercancel', release);
-    // Pausa no hover — só em aparelhos com mouse
+    // Pausa no hover — só em aparelhos com mouse (no celular nunca pausa)
     if(window.matchMedia('(hover:hover)').matches){
-      mq.addEventListener('mouseenter', () => hold(600000));
-      mq.addEventListener('mouseleave', () => hold(0));
+      mq.addEventListener('mouseenter', () => { hovering = true; });
+      mq.addEventListener('mouseleave', () => { hovering = false; });
     }
     function loop(){
       if(half > 0){
-        if(!down && Date.now() > pauseUntil) pos += AUTO;
+        if(!down && !hovering) pos += AUTO;
         if(pos >= half) pos -= half; else if(pos < 0) pos += half;
         track.style.transform = 'translate3d(' + (-pos) + 'px,0,0)';
       } else { measure(); }
@@ -2758,6 +2786,7 @@ const CONFIG_P2 = {
     </p>
     <h1>Qual sacola você quer <em>orçar hoje</em>?</h1>
     <p>Escolha o tipo, o tamanho e a impressão. Em menos de um minuto você recebe tudo certinho no WhatsApp.</p>
+    <p class="hero-mobile-sub">Escolha o tipo e receba o orçamento no WhatsApp.</p>
     <div class="paths" id="p2-tipoPaths"></div>
     <div class="trust-row">
       <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>Sem compromisso</span>
