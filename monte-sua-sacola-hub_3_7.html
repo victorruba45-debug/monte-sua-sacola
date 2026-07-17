@@ -1029,6 +1029,13 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{
 }
 .opt.sel .ico:has(img){box-shadow:0 0 0 2px var(--green)}
 
+/* ── Home das abas Plástica/TNT/EcoBag: sem portfólio, então o rodapé
+   é "ancorado" no fim da viewport (mesmo ritmo visual do escuro-claro-escuro
+   da home de papel, só que com o vão em vez do portfólio) ── */
+#p2-home{display:flex;flex-direction:column;min-height:100vh}
+#p2-home .hero{flex:0 0 auto}
+#p2-home .site-footer{margin-top:auto}
+
 /* ── Footer (dark, padrão Site-PrismaPrints) ── */
 .site-footer{
   width:100vw;margin-left:calc(50% - 50vw);
@@ -1894,8 +1901,21 @@ function openBuilder(){
   window.scrollTo(0,0); renderStep();
 }
 function goHome(){
+  // Sempre volta pra home do papel, de qualquer lugar do site — inclusive
+  // se o usuário estiver dentro da aba Plástica/TNT/EcoBag (módulo P2),
+  // que tem suas próprias telas e precisam ser escondidas aqui também
+  // (senão as duas ficam visíveis ao mesmo tempo, mescladas na tela).
   document.getElementById("builder").classList.add("hide");
+  const seg = document.getElementById("segPage");
+  if (seg) seg.classList.add("hide");
   document.getElementById("home").classList.remove("hide");
+  const p2Home = document.getElementById("p2-home");
+  const p2Builder = document.getElementById("p2-builder");
+  if (p2Home) p2Home.classList.add("hide");
+  if (p2Builder) p2Builder.classList.add("hide");
+  if (typeof currentTab !== "undefined") currentTab = "papel";
+  if (typeof papelTelaAtual !== "undefined") papelTelaAtual = "home";
+  if (typeof updateTabActiveState === "function") updateTabActiveState();
   document.getElementById("stepCount").textContent=""; window.scrollTo(0,0);
 }
 
@@ -1911,8 +1931,8 @@ function steps(){
   // Ilhós virou opcional em cascata dentro da etapa de alça (sem etapa própria)
   if(t.acabamentos) list.push({key:"acab",label:"Acabamentos",render:stepAcab,valid:()=>true});
   list.push({key:"qtd",label:"Quantidade",render:stepQtd,valid:()=>!!S.qtd});
-  // Fluxo "do zero": pessoa escolhe o segmento antes de finalizar
-  // Passo de segmento removido (o site não usa mais escolha por segmento)
+  // Segmento do cliente: pergunta logo antes de finalizar/enviar pro WhatsApp
+  list.push({key:"seg",label:"Segmento",render:stepSeg,valid:()=>!!S.seg});
   list.push({key:"final",label:"Finalizar",render:stepFinal,valid:()=>true});
   return list;
 }
@@ -1928,8 +1948,8 @@ function estTotal(){
   // Estimativa de passos: se a categoria ainda não foi escolhida, presume um fluxo típico
   const all = steps();
   if(S.mod) return all.length;
-  // Fluxo típico premium: Categoria, Tamanho, Impressão, Alça, Acabamentos, Quantidade, Finalizar
-  return 7;
+  // Fluxo típico premium: Categoria, Tamanho, Impressão, Alça, Acabamentos, Quantidade, Segmento, Finalizar
+  return 8;
 }
 function renderStep(){
   const all = steps();
@@ -2668,7 +2688,7 @@ function openTipo(tipo){
     closeDrawer();
     window.scrollTo(0,0);
   }
-  P2.pickTipo(tipo);
+  P2.showHome(tipo);
 }
 function openTab(tab){
   if (tab === currentTab) { closeDrawer(); return; }
@@ -2737,6 +2757,11 @@ const CONFIG_P2 = {
       icone: "🛍️",
       desc: "Alça vazada ou camiseta, resistente e econômica",
       minimo: 500,
+      // ── Textos da tela de intro (hero) desta aba ──
+      heroTitle: 'Monte sua sacola <em>plástica</em> e receba o orçamento na hora.',
+      heroDesc: "Escolha a alça, o tamanho e a impressão. Em menos de um minuto você recebe tudo certinho no WhatsApp.",
+      heroMobileSub: "Monte em 1 minuto e receba o orçamento no WhatsApp.",
+      ctaLabel: "Montar minha sacola plástica",
       // Sacola plástica sai sempre em 1 cor (sem etapa de escolha).
       // Se um dia quiser reabilitar a escolha de cores nela, apague
       // esta linha "coresFixo" — o wizard volta a perguntar.
@@ -2784,6 +2809,10 @@ const CONFIG_P2 = {
       icone: "👜",
       desc: "Tecido não-tecido, leve e reutilizável",
       minimo: 50,
+      heroTitle: 'Monte sua sacola <em>TNT</em> e receba o orçamento na hora.',
+      heroDesc: "Escolha o tamanho e a impressão. Em menos de um minuto você recebe tudo certinho no WhatsApp.",
+      heroMobileSub: "Monte em 1 minuto e receba o orçamento no WhatsApp.",
+      ctaLabel: "Montar minha sacola TNT",
       tamanhos: [
         { nome: "P",  medida: "25 × 30 cm" },
         { nome: "M",  medida: "30 × 40 cm" },
@@ -2795,6 +2824,10 @@ const CONFIG_P2 = {
       icone: "🌿",
       desc: "Ecológica e durável, cara de marca premium",
       minimo: 50,
+      heroTitle: 'Monte sua <em>Eco Bag</em> e receba o orçamento na hora.',
+      heroDesc: "Escolha o tamanho e a impressão. Em menos de um minuto você recebe tudo certinho no WhatsApp.",
+      heroMobileSub: "Monte em 1 minuto e receba o orçamento no WhatsApp.",
+      ctaLabel: "Montar minha Eco Bag",
       tamanhos: [
         { nome: "P",  medida: "30 × 35 cm" },
         { nome: "M",  medida: "35 × 40 cm" },
@@ -2828,25 +2861,58 @@ const CONFIG_P2 = {
 </script>
 
 <!-- ════════════ ABA: PLÁSTICA / TNT / ECO BAG (módulo P2) ════════════ -->
-<!-- ════════════ HOME (escolha do tipo) ════════════ -->
+<!-- ════════════ HOME (tela de intro própria de cada tipo) ════════════ -->
 <main id="p2-home" class="wrap hide">
   <section class="hero">
     <span class="hero-orb" aria-hidden="true"></span>
     <span class="hero-orb o2" aria-hidden="true"></span>
     <p class="eyebrow">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
-      Plástica · TNT · Eco Bag
+      <span id="p2h-eyebrow-text">Sacola Plástica</span>
     </p>
-    <h1>Qual sacola você quer <em>orçar hoje</em>?</h1>
-    <p>Escolha o tipo, o tamanho e a impressão. Em menos de um minuto você recebe tudo certinho no WhatsApp.</p>
-    <p class="hero-mobile-sub">Escolha o tipo e receba o orçamento no WhatsApp.</p>
-    <div class="paths" id="p2-tipoPaths"></div>
+    <h1 id="p2h-title">Monte sua sacola e receba o <em>orçamento na hora</em>.</h1>
+    <p id="p2h-desc">Escolha o tamanho e a impressão. Em menos de um minuto você recebe tudo certinho no WhatsApp.</p>
+    <p class="hero-mobile-sub" id="p2h-mobilesub">Monte em 1 minuto e receba o orçamento no WhatsApp.</p>
+    <div class="paths">
+      <button class="path-card path-custom" id="p2h-cta" onclick="P2.startBuilder()">
+        <span class="path-ico" id="p2h-cta-ico">🛍️</span>
+        <span class="path-body">
+          <strong id="p2h-cta-label">Montar minha sacola</strong>
+          <span id="p2h-cta-sub">Pronto em 1 minuto</span>
+        </span>
+        <svg class="path-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
     <div class="trust-row">
       <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>Sem compromisso</span>
       <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Pronto em 1 minuto</span>
       <span class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2z"/></svg>Resposta pelo WhatsApp</span>
     </div>
   </section>
+
+  <footer class="site-footer">
+    <span class="foot-orb" aria-hidden="true"></span>
+    <div class="sf-grid">
+      <div>
+        <div class="sf-logo">
+          <span class="dot" aria-hidden="true" style="width:28px;height:28px;border-radius:8px"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>
+          <strong id="p2h-footBrand">Sacolas Já</strong>
+        </div>
+        <p class="sf-desc" id="p2h-footdesc">Sacolas personalizadas sob medida. Configure online em menos de 1 minuto e receba o orçamento direto no WhatsApp — sem compromisso.</p>
+      </div>
+      <div>
+        <div class="sf-ct">Atalhos</div>
+        <button class="sf-l" onclick="openTab('papel')">Sacola de Papel</button>
+        <button class="sf-l" onclick="P2.startBuilder()" id="p2h-footCta">Montar minha sacola</button>
+      </div>
+      <div>
+        <div class="sf-ct">Contato</div>
+        <a class="sf-l" id="p2h-footWa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+        <span class="sf-l" style="cursor:default">Atendimento em todo o Brasil</span>
+      </div>
+    </div>
+    <div class="sf-bot">© 2026 Sacolas Já. Todos os direitos reservados.</div>
+  </footer>
 </main>
 
 <!-- ════════════ BUILDER ════════════ -->
@@ -2929,22 +2995,36 @@ function showScreen(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ══════════════ HOME: cards de tipo ══════════════
-function renderHome() {
-  const host = document.getElementById('p2-tipoPaths');
-  host.innerHTML = Object.entries(CONFIG_P2.tipos).map(([key, t]) => `
-    <button class="path-card path-seg" onclick="P2.pickTipo('${key}')">
-      <span class="path-ico">${t.icone}</span>
-      <span class="path-body">
-        <strong>${t.nome}</strong>
-        <span>${t.desc} · mínimo ${t.minimo} un.</span>
-      </span>
-      ${ICO.arrow}
-    </button>
-  `).join('');
+// ══════════════ HOME: tela de intro própria de cada tipo ══════════════
+// Preenche o hero (#p2-home) com os textos/ícone do tipo ativo.
+function renderHomeHero(key) {
+  const t = CONFIG_P2.tipos[key];
+  if (!t) return;
+  const set = (id, val, html) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (html) el.innerHTML = val; else el.textContent = val;
+  };
+  set('p2h-eyebrow-text', t.nome);
+  set('p2h-title', t.heroTitle || `Monte sua ${t.nome} e receba o <em>orçamento na hora</em>.`, true);
+  set('p2h-desc', t.heroDesc || `Escolha o tamanho e a impressão. Em menos de um minuto você recebe tudo certinho no WhatsApp.`);
+  set('p2h-mobilesub', t.heroMobileSub || 'Monte em 1 minuto e receba o orçamento no WhatsApp.');
+  set('p2h-cta-ico', t.icone);
+  set('p2h-cta-label', t.ctaLabel || `Montar minha ${t.nome}`);
+  set('p2h-cta-sub', `${t.desc} · mínimo ${t.minimo} un.`);
+  // ── Footer ──
+  set('p2h-footBrand', CONFIG_P2.marca);
+  set('p2h-footdesc', `${t.nome} personalizada sob medida. Configure online em menos de 1 minuto e receba o orçamento direto no WhatsApp — sem compromisso.`);
+  set('p2h-footCta', t.ctaLabel || `Montar minha ${t.nome}`);
+  const waEl = document.getElementById('p2h-footWa');
+  if (waEl) {
+    const wa = (key === 'plastica' && CONFIG_P2.whatsappPlastica) ? CONFIG_P2.whatsappPlastica : CONFIG_P2.whatsapp;
+    waEl.href = 'https://wa.me/' + wa;
+  }
 }
 
-function pickTipo(key) {
+// Prepara o estado para um tipo (sem navegar pra tela nenhuma ainda).
+function prepTipo(key) {
   state.tipo = key;
   state.tamanho = null; state.alca = null; state.qtd = null;
   state._ladosOpen = false;
@@ -2957,9 +3037,26 @@ function pickTipo(key) {
   // etapa de cores normalmente, mas já vêm com a única opção
   // pré-selecionada — o cliente vê e confirma, não escolhe.
   state.cores = t.coresFixo ? { id: t.coresFixo.id, nome: t.coresFixo.nome } : null;
+}
+
+// Chamada pelo hub (drawer/rota) — mostra a tela de intro do tipo escolhido.
+function showHome(key) {
+  prepTipo(key);
+  renderHomeHero(key);
+  showScreen('p2-home');
+}
+
+// Entra no wizard a partir da tela de intro atual (botão "Montar minha sacola…").
+function startBuilder() {
   stepIdx = 0;
   showScreen('p2-builder');
   renderStep();
+}
+
+// Mantido por compatibilidade: define o tipo e já entra direto no wizard.
+function pickTipo(key) {
+  prepTipo(key);
+  startBuilder();
 }
 
 // ══════════════ BUILDER ══════════════
@@ -3222,6 +3319,7 @@ function prevStep() {
   else goHome();
 }
 function goHome() {
+  if (state.tipo) renderHomeHero(state.tipo);
   showScreen('p2-home');
   const stepCountEl = document.getElementById('stepCount');
   if (stepCountEl) stepCountEl.textContent = '';
@@ -3293,13 +3391,10 @@ function enviarWhatsApp() {
 function escapeAttr(s) { return (s || '').replace(/"/g, '&quot;'); }
 
 // ── Chamada de fora (pelo drawer "Outras sacolas") ──
-// Reseta a tela do P2 pra home sempre que essa aba for aberta pela
-// primeira vez; se já havia progresso, mantém (ver openTab no hub).
+// Mantida por compatibilidade com o hub; cada tipo agora renderiza
+// sua própria tela de intro via showHome(tipo), chamada pelo openTipo().
 function ensureInit() {
-  if (!ensureInit._done) {
-    renderHome();
-    ensureInit._done = true;
-  }
+  ensureInit._done = true;
 }
 
 // ── API pública (namespace) ──
@@ -3323,7 +3418,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 window.P2 = {
-  pickTipo, pickAlca, pickTamanho, pickLados, pickCores, pickQtd,
+  pickTipo, showHome, startBuilder, pickAlca, pickTamanho, pickLados, pickCores, pickQtd,
   toggleLadosPanel, nextStep,
   setNome, setContato, prevStep, goHome, enviarWhatsApp,
   openQtyModal, closeQtyModal, onQtyModalInput, confirmQtyModal,
@@ -3339,8 +3434,8 @@ window.P2 = {
    (também funcionam #plastica / ?aba=plastica etc.) */
 window.addEventListener('load', function(){
   try{
-    // Mantém a aba do menu sincronizada quando o tipo é escolhido
-    // por dentro da página (tela "Qual sacola você quer orçar hoje?")
+    // Mantém a aba do menu sincronizada caso pickTipo() seja chamado
+    // diretamente (fora do fluxo normal via openTipo/drawer).
     if(window.P2 && P2.pickTipo){
       const _pick = P2.pickTipo;
       P2.pickTipo = function(k){ currentTipoP2 = k; return _pick(k); };
