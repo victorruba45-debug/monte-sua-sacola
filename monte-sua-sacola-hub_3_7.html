@@ -1916,6 +1916,7 @@ function goHome(){
   if (typeof currentTab !== "undefined") currentTab = "papel";
   if (typeof papelTelaAtual !== "undefined") papelTelaAtual = "home";
   if (typeof updateTabActiveState === "function") updateTabActiveState();
+  if (typeof setPath === "function") setPath("/");
   document.getElementById("stepCount").textContent=""; window.scrollTo(0,0);
 }
 
@@ -2678,6 +2679,16 @@ function updateTabActiveState(){
     if(el) el.classList.toggle('active', currentTab==='p2' && currentTipoP2===t);
   });
 }
+/* Atualiza a URL da barra de endereço (sem recarregar a página) pra
+   refletir a aba/tipo atual — assim dá pra compartilhar/favoritar o
+   sublink certinho e o botão voltar do navegador funciona. */
+function setPath(path){
+  try{
+    const cur = location.pathname.replace(/\/+$/,'') || '/';
+    const target = path === '/' ? '/' : '/' + path.replace(/^\/+/,'');
+    if(cur !== target) history.pushState({path:target}, '', target);
+  }catch(e){}
+}
 /* Abre direto um tipo (aba própria: Plástica, TNT ou Eco Bag) */
 function openTipo(tipo){
   if(currentTab === 'p2' && currentTipoP2 === tipo){ closeDrawer(); return; }
@@ -2689,6 +2700,7 @@ function openTipo(tipo){
     window.scrollTo(0,0);
   }
   P2.showHome(tipo);
+  setPath('/' + tipo);
 }
 function openTab(tab){
   if (tab === currentTab) { closeDrawer(); return; }
@@ -2724,6 +2736,7 @@ function openTab(tab){
     } else {
       papelHome.classList.remove('hide');
     }
+    setPath('/');
   } else if (tab === 'p2') {
     papelHome.classList.add('hide'); papelBuilder.classList.add('hide');
     if (papelSeg) papelSeg.classList.add('hide');
@@ -3431,7 +3444,19 @@ window.P2 = {
 <script>
 /* ── Links diretos por tipo de sacola ──
    /plastica → Sacola Plástica  ·  /tnt → Sacola TNT  ·  /ecobag → Eco Bag
-   (também funcionam #plastica / ?aba=plastica etc.) */
+   (também funcionam #plastica / ?aba=plastica etc.)
+   Sincroniza a URL nos dois sentidos: clicar num sublink no menu já
+   atualiza a barra de endereço (via setPath, no hub), e navegar direto
+   pra /plastica, /tnt, /ecobag ou usar voltar/avançar do navegador
+   também abre a aba certa. */
+function resolveTipoFromLocation(){
+  const q = new URLSearchParams(location.search);
+  const caminho = (location.pathname.replace(/\/+$/,'').split('/').pop() || '').toLowerCase();
+  const hash = (location.hash || '').replace('#','').toLowerCase();
+  const aba = (q.get('aba') || '').toLowerCase();
+  const MAPA = {plastica:'plastica','plástica':'plastica',tnt:'tnt',ecobag:'ecobag'};
+  return MAPA[caminho] || MAPA[hash] || MAPA[aba] || null;
+}
 window.addEventListener('load', function(){
   try{
     // Mantém a aba do menu sincronizada caso pickTipo() seja chamado
@@ -3440,13 +3465,16 @@ window.addEventListener('load', function(){
       const _pick = P2.pickTipo;
       P2.pickTipo = function(k){ currentTipoP2 = k; return _pick(k); };
     }
-    const q = new URLSearchParams(location.search);
-    const caminho = (location.pathname.replace(/\/+$/,'').split('/').pop() || '').toLowerCase();
-    const hash = (location.hash || '').replace('#','').toLowerCase();
-    const aba = (q.get('aba') || '').toLowerCase();
-    const MAPA = {plastica:'plastica','plástica':'plastica',tnt:'tnt',ecobag:'ecobag'};
-    const tipo = MAPA[caminho] || MAPA[hash] || MAPA[aba];
+    const tipo = resolveTipoFromLocation();
     if(tipo) openTipo(tipo);
+  }catch(e){}
+});
+// Botão voltar/avançar do navegador: reabre a aba/tipo que a URL indica.
+window.addEventListener('popstate', function(){
+  try{
+    const tipo = resolveTipoFromLocation();
+    if(tipo) openTipo(tipo);
+    else goHome();
   }catch(e){}
 });
 </script>
