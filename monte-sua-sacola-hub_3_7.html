@@ -36,7 +36,7 @@
 const CONFIG = {
   marca: "Sacolas Já",
   // Seu WhatsApp com DDI+DDD, só números. Ex.: 5511999998888
-  whatsapp: "5511972224120",
+  whatsapp: "119735958434",
   // Faixa de preço por categoria (opcional). Deixe "" pra esconder.
   precoBasico:        "",   // ex.: "a partir de R$ 0,90/un."
   precoIntermediario: "",   // ex.: "a partir de R$ 1,90/un."
@@ -588,22 +588,22 @@ input,select,textarea{font-family:inherit}
   display:flex;align-items:center;gap:12px;width:100%;
   margin-top:14px;padding:12px 14px;text-align:left;cursor:pointer;
   background:transparent;
-  border:1px solid var(--line);border-radius:var(--r);
+  border:1px solid rgba(10,10,10,.14);border-radius:var(--r);
   transition:border-color .2s var(--ease),background .2s var(--ease);
 }
-.bonus-ilhos:hover{border-color:var(--line-2);background:var(--card)}
+.bonus-ilhos:hover{border-color:rgba(10,10,10,.26);background:var(--card)}
 .bonus-ilhos:active{transform:scale(.995)}
 .bonus-txt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
-.bonus-t{font-weight:600;font-size:.88rem;color:var(--ink-soft)}
-.bonus-d{font-size:.8rem;color:var(--ink-faint);line-height:1.4}
-.bonus-arrow{color:var(--ink-faint);flex-shrink:0;transition:transform .3s var(--ease),color .2s}
-.bonus-ilhos:hover .bonus-arrow{transform:translateX(2px);color:var(--ink-soft)}
-.bonus-ilhos.open{border-color:var(--line-2);background:var(--card);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.bonus-t{font-weight:700;font-size:.88rem;color:var(--ink)}
+.bonus-d{font-size:.8rem;color:var(--ink-soft);line-height:1.4}
+.bonus-arrow{color:var(--ink-soft);flex-shrink:0;transition:transform .3s var(--ease),color .2s}
+.bonus-ilhos:hover .bonus-arrow{transform:translateX(2px);color:var(--ink)}
+.bonus-ilhos.open{border-color:rgba(10,10,10,.26);background:var(--card);border-bottom-left-radius:0;border-bottom-right-radius:0}
 .bonus-ilhos.open .bonus-arrow{transform:rotate(180deg)}
 .bonus-sel{color:var(--green);font-weight:700}
 .bonus-panel{
   display:flex;flex-direction:column;gap:10px;
-  border:1px solid var(--line-2);border-top:none;
+  border:1px solid rgba(10,10,10,.26);border-top:none;
   border-bottom-left-radius:var(--r);border-bottom-right-radius:var(--r);
   padding:12px;background:var(--card);
   animation:panelIn .25s var(--ease-out) both;
@@ -807,7 +807,18 @@ input,select,textarea{font-family:inherit}
   font-family:"Syne",sans-serif;font-size:1.22rem;font-weight:700;
   color:var(--ink);letter-spacing:-0.02em;display:flex;align-items:center;gap:9px;flex-wrap:wrap;
 }
-.tier-sub{font-size:.8rem;color:var(--ink-faint);font-weight:500}
+.tier-sub{font-size:.83rem;color:var(--ink);font-weight:600}
+.tier-paper{
+  font-size:.7rem;font-weight:800;padding:5px 12px;border-radius:8px;letter-spacing:.04em;
+  text-transform:uppercase;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;
+  background:var(--ink);color:#fff;
+}
+.tier-diff{
+  display:flex;align-items:flex-start;gap:8px;margin:0 0 13px;padding:10px 13px;
+  background:var(--card);border:1px solid var(--line-2);border-left:3px solid var(--ink);
+  border-radius:10px;font-size:.82rem;color:var(--ink);line-height:1.5;
+}
+.tier-diff strong{font-weight:700}
 .tier-check{
   flex-shrink:0;width:26px;height:26px;border-radius:50%;
   border:2px solid var(--line);display:grid;place-items:center;color:#fff;
@@ -815,8 +826,21 @@ input,select,textarea{font-family:inherit}
 }
 .tier-check svg{width:15px;height:15px}
 .tier.sel .tier-check{background:var(--green);border-color:var(--green);transform:scale(1);opacity:1}
-.tier-tag{font-size:.95rem;color:var(--green);font-weight:600;margin-bottom:7px}
+.tier-tag{font-size:1rem;color:var(--green);font-weight:700;margin-bottom:10px;letter-spacing:-0.01em}
 .tier-atende{font-size:.85rem;color:var(--ink-soft);line-height:1.55;margin-bottom:13px}
+.tier-specs{
+  display:flex;flex-direction:column;
+  border:1px solid var(--line-2);border-radius:12px;overflow:hidden;
+  margin-bottom:13px;background:var(--paper);
+}
+.tier-spec-row{
+  display:flex;gap:10px;padding:8px 12px;
+  font-size:.79rem;line-height:1.4;
+  border-bottom:1px solid var(--line-2);
+}
+.tier-spec-row:last-child{border-bottom:none}
+.tier-spec-k{flex:0 0 96px;flex-shrink:0;font-weight:700;color:var(--ink)}
+.tier-spec-v{flex:1;min-width:0;color:var(--ink-soft)}
 .tier-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .tier-list li{display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:var(--ink-soft);line-height:1.45}
 .tier-list li svg{width:15px;height:15px;color:var(--green);flex-shrink:0;margin-top:2px}
@@ -987,6 +1011,8 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{
   .tier{padding:16px}
   .tier-ico{width:48px;height:48px;border-radius:12px}
   .tier-name{font-size:1.1rem}
+  .tier-spec-k{flex-basis:78px;font-size:.74rem}
+  .tier-spec-v{font-size:.74rem}
 }
 
 .qty-card{min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -1617,34 +1643,52 @@ const CORES = [
 /* As 3 categorias — o coração do site. Cada uma trava o que faz sentido. */
 const TIERS = [
   {
-    id:"basico", nome:"Básico", sub:"Kraft 150g", badge:null,
-    tagline:"Simples, prática e econômica",
-    atende:"Ideal pra delivery, fast-food, padarias e quem precisa de uma embalagem simples no dia a dia.",
-    inclui:["Papel kraft de 150g (natural ou branco)","Impressão em 1, 2 ou 4 cores — frente e verso","Alça retorcida ou sem alça","Medidas sob medida"],
+    id:"basico", nome:"Básico", papel:"Kraft", sub:"Papel kraft · 90g a 180g", badge:null,
+    tagline:"🌿 Sustentável & Rústica",
+    specs:[
+      ["Estilo","Visual natural, poroso e fosco (eco-friendly)"],
+      ["Cor do papel","Pardo/castanho natural (ou kraft branco)"],
+      ["Interior","Pardo"],
+      ["Ideal para","Artes minimalistas, logos em poucas cores, delivery e moda casual"],
+    ],
+    diferencial:"Menor custo da linha — ótima pra alto volume e uso diário.",
+    inclui:["100% ecológico","Impressão em 1, 2 ou 4 cores — frente e verso","Alça retorcida ou sem alça","Medidas sob medida"],
     naoInclui:null,
     precoKey:"precoBasico",
     cores:"kraft", numCores:["1/0","2/0","4/0"], alcas:["sem_alca","retorcido","nylon"],
-    materiais:null, acabamentos:null,
+    materiais:null, acabamentos:null, hotstamping:false,
   },
   {
-    id:"intermediario", nome:"Intermediária", sub:"Offset 180g a 240g · Sacola 7", badge:["best","Mais vendida"],
-    tagline:"O melhor custo-benefício",
-    atende:"A queridinha. Pra lojas, marcas e comércios que querem qualidade de verdade sem pagar caro.",
-    inclui:["Papel offset de 180g (a partir do tamanho G: 240g)","Impressão em 1, 2 ou 4 cores — frente e verso","Ilhós opcional (adicional)","Todas as opções de alça"],
+    id:"intermediario", nome:"Intermediária", papel:"Offset", sub:"Papel offset · 180g a 240g", badge:["best","Mais vendida"],
+    tagline:"⚪ Clean & Sem Brilho",
+    specs:[
+      ["Estilo","Toque suave e acabamento 100% fosco (sem película plástica)"],
+      ["Base do papel","Branca — garante cores fiéis e permite imprimir qualquer cor"],
+      ["Interior","Branco"],
+      ["Ideal para","Marcas modernas, papelarias finas e estética minimalista"],
+    ],
+    diferencial:"Ilhós e hot stamping opcionais — um toque premium sem pagar o preço do Premium.",
+    inclui:["Impressão em 1, 2 ou 4 cores — frente e verso","Ilhós opcional (adicional)","Hot stamping opcional — dourado ou prata (adicional)","Todas as opções de alça"],
     naoInclui:"Sem laminação — pra acabamentos especiais, vá de Premium.",
     precoKey:"precoIntermediario",
     cores:"full", numCores:["1/0","2/0","4/0"], alcas:["retorcido","nylon","gorgurão","sao_francisco"],
-    materiais:null, acabamentos:null,
+    materiais:null, acabamentos:null, hotstamping:true,
   },
   {
-    id:"premium", nome:"Premium", sub:"Triplex 210g a 250g", badge:["prem","Premium"],
-    tagline:"Requinte e durabilidade",
-    atende:"Pra marcas que querem uma embalagem marcante: boutiques, óticas, joalherias e presentes especiais.",
-    inclui:["Papel triplex de 210g (a partir do tamanho G: 250g) — encorpado e nobre","Impressão em 1, 2 ou 4 cores — frente e verso","Laminação, hot stamping ou verniz","Alças premium: nylon, gorgurão ou são francisco"],
+    id:"premium", nome:"Premium", papel:"Triplex", sub:"Papel triplex · 210g a 250g", badge:["prem","Premium"],
+    tagline:"💎 Premium & Luxo 360°",
+    specs:[
+      ["Estilo","Impressão colorida total de alta definição com acabamento nobre"],
+      ["Base do papel","Branca e encorpada"],
+      ["Interior","100% branco e liso — permite imprimir estampa no interior"],
+      ["Ideal para","Boutiques, joalherias, perfumarias e presentes VIP"],
+    ],
+    diferencial:"O acabamento mais completo da linha: laminação, verniz localizado e hot stamping.",
+    inclui:["Impressão em 1, 2 ou 4 cores — frente e verso","Laminação fosca, brilho ou verniz localizado (escolha uma)","Hot stamping opcional — dourado ou prata (adicional)","Alças premium: nylon, gorgurão ou são francisco"],
     naoInclui:null,
     precoKey:"precoPremium",
     cores:"full", numCores:["1/0","2/0","4/0"], alcas:["nylon","gorgurão","sao_francisco"],
-    materiais:["triplex","duplex"], acabamentos:["lam_fosca","lam_brilho","hot_dourado","hot_prata","verniz"],
+    materiais:["triplex","duplex"], acabamentos:["lam_fosca","lam_brilho","hot_dourado","hot_prata","verniz"], hotstamping:true,
   },
 ];
 
@@ -1701,7 +1745,7 @@ const MATERIAIS = [
 const ACABAMENTOS = [
   {id:"lam_fosca",   nome:"Laminação fosca",       d:"Toque aveludado, sofisticado"},
   {id:"lam_brilho",  nome:"Laminação brilho",      d:"Realça as cores"},
-  {id:"verniz",      nome:"Verniz localizado",     d:"Brilho só na arte"},
+  {id:"verniz",      nome:"Laminação fosca com verniz localizado", d:"Fosca na sacola, brilho só na arte"},
   {id:"hot_dourado", nome:"Hot stamping dourado",  d:"Detalhe metalizado dourado"},
   {id:"hot_prata",   nome:"Hot stamping prata",    d:"Detalhe metalizado prata"},
 ];
@@ -2033,13 +2077,12 @@ function stepMod(){
       <div class="tier-top">
         <span class="tier-ico">${modIcon(t.id)}</span>
         <span>
-          <span class="tier-name">${t.nome}${t.badge?`<span class="badge ${t.badge[0]}">${t.badge[1]}</span>`:""}</span>
+          <span class="tier-name">${t.nome}${t.papel?`<span class="tier-paper">${t.papel}</span>`:""}${t.badge?`<span class="badge ${t.badge[0]}">${t.badge[1]}</span>`:""}</span>
           ${t.sub?`<span class="tier-sub">${t.sub}</span>`:""}
         </span>
         <span class="tier-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg></span>
       </div>
-      <div class="tier-tag">${t.tagline}</div>
-      <div class="tier-atende">${t.atende}</div>
+      ${t.diferencial?`<div class="tier-diff">${diffStar()}<span><strong>Diferencial:</strong> ${t.diferencial}</span></div>`:""}
       <ul class="tier-list">${t.inclui.map(x=>`<li>${miniCheck()}${x}</li>`).join("")}</ul>
       ${t.naoInclui?`<div class="tier-not">${t.naoInclui}</div>`:""}
       ${preco?`<div class="tier-price">${preco}</div>`:""}
@@ -2051,7 +2094,11 @@ function setMod(id){
   if(id==="premium") S.mat="triplex"; // sempre triplex no premium
   if(t.materiais){ if(!t.materiais.includes(S.mat)) S.mat=null; } else S.mat=null;
   if(t.numCores){ if(!t.numCores.includes(S.numCores)) S.numCores=null; } else S.numCores=null;
-  if(t.acabamentos){ S.acab=S.acab.filter(a=>t.acabamentos.includes(a)); } else S.acab=[];
+  // Mantém só os acabamentos compatíveis com a nova categoria — inclui o
+  // grupo de hot stamping quando a categoria permite esse opcional (mesmo
+  // quando não tem etapa própria de "Acabamentos", caso da Intermediária).
+  const allowedAcab = t.acabamentos || (t.hotstamping ? ["hot_dourado","hot_prata"] : []);
+  S.acab = S.acab.filter(a=>allowedAcab.includes(a));
   if(S.alca && !t.alcas.includes(S.alca)){ S.alca=null; }
   // Clear sem_alca if non-food segment
   const _FOOD = ["Restaurante","Delivery","Doceria & Cafe"];
@@ -2173,15 +2220,48 @@ function stepNumCores(){
       <p style="margin:0;font-size:13.5px;color:var(--green-d);line-height:1.5">
         💡 <strong>Dica:</strong> Não tem certeza? Manda a arte no WhatsApp e a gente te diz qual opção usar.
       </p>
-    </div>`;
+    </div>` + bonusHotBtn();
 }
 function setNumCores(v){ window.__justSelected=true; S.numCores=v; renderStep(); }
+/* Opcional discreto em cascata: hot stamping, disponível pra Intermediária e
+   Premium — mesmo padrão visual/interativo do bônus de ilhós na etapa de alça. */
+function bonusHotBtn(){
+  const t = tier();
+  if(!t || !t.hotstamping) return "";
+  const open = !!S._hotOpen;
+  const current = S.acab.find(a=>["hot_dourado","hot_prata"].includes(a)) || null;
+  const HOT_IMG = {
+    hot_dourado: typeof IMG_HOT_DOURADO !== 'undefined' ? IMG_HOT_DOURADO : null,
+    hot_prata:   typeof IMG_HOT_PRATA   !== 'undefined' ? IMG_HOT_PRATA   : null,
+  };
+  const icoFor = id => { const img = id && HOT_IMG[id]; return img ? `<img src="${img}" alt="${id==='hot_dourado'?'Hot stamping dourado':'Hot stamping prata'}">` : finishIcon(id); };
+  const panel = !open ? "" : `<div class="bonus-panel">
+    ${opt(current===null, "setHot(null)", finishIcon(null), "Sem hot stamping", "Impressão comum, sem detalhe metalizado.")}
+    ${opt(current==='hot_dourado', "setHot('hot_dourado')", icoFor('hot_dourado'), "Hot stamping dourado (+adicional)", "Camada metalizada dourada aplicada sobre a arte.")}
+    ${opt(current==='hot_prata', "setHot('hot_prata')", icoFor('hot_prata'), "Hot stamping prata (+adicional)", "Camada metalizada prateada aplicada sobre a arte.")}
+  </div>`;
+  const selLabel = current==='hot_dourado' ? ' · Dourado' : current==='hot_prata' ? ' · Prata' : '';
+  return `<button class="bonus-ilhos ${open?'open':''}" onclick="toggleHotPanel()" aria-expanded="${open?'true':'false'}" aria-label="Acabamento opcional com hot stamping">
+    <span class="bonus-txt">
+      <span class="bonus-t">Opcional premium: hot stamping${current?`<span class="bonus-sel">${selLabel}</span>`:''}</span>
+      <span class="bonus-d">Detalhe metalizado dourado ou prata na arte${open?'':' — toque pra ver'}.</span>
+    </span>
+    <span class="bonus-arrow"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+  </button>` + panel;
+}
+function toggleHotPanel(){ S._hotOpen = !S._hotOpen; renderStep(); }
+function setHot(id){
+  window.__justSelected = true;
+  S.acab = S.acab.filter(x=>!["hot_dourado","hot_prata"].includes(x));
+  if(id) S.acab.push(id);
+  renderStep();
+}
 
 function stepAcab(){
   const ACAB_EX = {
-    lam_fosca:   "Deixa a sacola com toque aveludado e aparência sofisticada. Muito usada em boutiques. Obrigatório: escolha fosca ou brilho. A fosca combina com verniz localizado.",
-    lam_brilho:  "Realça as cores da impressão e deixa a superfície brilhante. Transmite modernidade. Obrigatório: escolha fosca ou brilho. O brilho não combina com verniz localizado.",
-    verniz:      "Brilho aplicado só em partes da arte — realça o logo ou uma ilustração sem brilhar a sacola toda. Opcional — disponível junto com a laminação fosca.",
+    lam_fosca:   "Deixa a sacola com toque aveludado e aparência sofisticada. Muito usada em boutiques. Obrigatório: escolha uma das três opções de acabamento.",
+    lam_brilho:  "Realça as cores da impressão e deixa a superfície brilhante. Transmite modernidade. Obrigatório: escolha uma das três opções de acabamento.",
+    verniz:      "Brilho aplicado só em partes da arte — realça o logo ou uma ilustração sem brilhar a sacola toda. Obrigatório: escolha uma das três opções de acabamento.",
     hot_dourado: "Camada metalizada dourada aplicada sobre a arte. Efeito premium na logo ou em detalhes. Opcional — pode escolher dourado, prata ou nenhum.",
     hot_prata:   "Camada metalizada prateada aplicada sobre a arte. Efeito premium na logo ou em detalhes. Opcional — pode escolher dourado, prata ou nenhum.",
   };
@@ -2196,13 +2276,12 @@ function stepAcab(){
   if(!S.acab.some(a=>ACAB_GRUPO_LAM.includes(a))){
     S.acab.push("lam_fosca");
   }
-  return head("Acabamentos","A laminação fosca já vem selecionada. Você pode trocar por brilho e, se quiser, adicionar verniz localizado (só com a fosca) e um hot stamping (dourado ou prata).") +
-  `<div class="opts" role="radiogroup">`+ ACABAMENTOS.map(a=>{
+  return head("Acabamentos","A laminação fosca já vem selecionada. Escolha entre laminação fosca, laminação brilho ou laminação fosca com verniz localizado — apenas uma das três.") +
+  `<div class="opts" role="radiogroup">`+ ACABAMENTOS.filter(a=>a.id!=="hot_dourado" && a.id!=="hot_prata").map(a=>{
     const sel=S.acab.includes(a.id);
-    const dis = a.id==="verniz" && S.acab.includes("lam_brilho");
     const img = ACAB_IMG[a.id];
     const ico = img ? `<img src="${img}" alt="${a.nome}">` : finishIcon(a.id);
-    return `<button class="opt ${sel?'sel':''} ${dis?'dis':''}" onclick="toggleAcab('${a.id}')" ${dis?'aria-disabled="true"':''}>
+    return `<button class="opt ${sel?'sel':''}" onclick="toggleAcab('${a.id}')">
       <span class="ico">${ico}</span>
       <span class="txt">
         <span class="t">${a.nome}</span>
@@ -2212,24 +2291,20 @@ function stepAcab(){
     </button>`;
   }).join("")+`</div>`;
 }
-const ACAB_GRUPO_LAM = ["lam_fosca","lam_brilho"];
+const ACAB_GRUPO_LAM = ["lam_fosca","lam_brilho","verniz"];
 const ACAB_GRUPO_HOT = ["hot_dourado","hot_prata"];
 function toggleAcab(id){
   if(S.acab.includes(id)){
     if(ACAB_GRUPO_LAM.includes(id)){
-      // Laminação (fosca ou brilho) é obrigatória: não permite ficar sem nenhuma das duas.
-      // Pra trocar, o cliente clica na outra opção de laminação.
+      // Acabamento (fosca, brilho ou fosca+verniz) é obrigatório: não permite
+      // ficar sem nenhum dos três. Pra trocar, o cliente clica na outra opção.
       return;
     }
     S.acab = S.acab.filter(x=>x!==id);
   } else {
-    // Verniz localizado só combina com laminação fosca
-    if(id==="verniz" && S.acab.includes("lam_brilho")) return;
     // Dentro do mesmo grupo (laminação OU hot stamping), só pode ter 1 selecionado por vez
     if(ACAB_GRUPO_LAM.includes(id)) S.acab = S.acab.filter(x=>!ACAB_GRUPO_LAM.includes(x));
     if(ACAB_GRUPO_HOT.includes(id)) S.acab = S.acab.filter(x=>!ACAB_GRUPO_HOT.includes(x));
-    // Ao escolher laminação brilho, remove o verniz (não combinam)
-    if(id==="lam_brilho") S.acab = S.acab.filter(x=>x!=="verniz");
     S.acab.push(id);
   }
   renderStep();
@@ -2381,10 +2456,10 @@ function setSeg(s){ window.__justSelected=true; S.seg=s; renderStep(); }
 function summaryRows(){
   const t=tier(); const r=[];
   r.push(["Categoria", modFull(S.mod)]);
-  if(t.materiais) r.push(["Papel", matNameSimple()]);
+  if(t) r.push(["Papel", papelSummary()]);
   r.push(["Tamanho", tamName()]);
   const cl=coresLine(); if(cl) r.push(cl);
-  if(t.acabamentos && S.acab.length) r.push(["Acabamentos", acabNames()]);
+  if(S.acab.length) r.push(["Acabamentos", acabNames()]);
   r.push(["Alça", alcaName(S.alca)]);
   if(S.ilhos) r.push(["Ilhós", "Sim (com reforço metálico)"]);
   r.push(["Quantidade", qtdTxt()]);
@@ -2419,7 +2494,7 @@ function renderPreview(){
 function updateRecap(){
   const el=document.getElementById("recap"); if(!el) return;
   const t=tier(); const rows=[["Categoria", S.mod?modName(S.mod):"—"]];
-  if(t&&t.materiais) rows.push(["Papel", S.mat?matName():"—"]);
+  if(t) rows.push(["Papel", t.materiais ? (S.mat?matName():"—") : gramaturaDesc(S.mod)]);
   rows.push(["Tamanho", S.tam?tamName():"—"]);
   const cl=coresLine(); if(cl) rows.push(cl);
   rows.push(["Alça", S.alca?alcaName(S.alca):"—"]);
@@ -2449,10 +2524,10 @@ function sendWhats(){
 
   body += `${box} *Produto*\n`;
   body += `${label} Categoria: *${modFull(S.mod)}*\n`;
-  if(t.materiais) body += `📄 Papel: *${matNameSimple()}*\n`;
+  if(t) body += `📄 Papel: *${papelSummary()}*\n`;
   body += `${ruler} Tamanho: *${tamName()}*\n`;
   const cl=coresLine(); if(cl) body += `${palette} ${cl[0]}: *${cl[1]}*\n`;
-  if(t.acabamentos && S.acab.length) body += `${sparkle} Acabamentos: *${acabNames()}*\n`;
+  if(S.acab.length) body += `${sparkle} Acabamentos: *${acabNames()}*\n`;
   body += `${bag} Alça: *${alcaName(S.alca)}${S.ilhos?" + ilhós metálico":""}*\n`;
 
   body += `\n${chart} *Pedido*\n`;
@@ -2489,6 +2564,7 @@ function opt(sel,act,ico,t,d,badge=""){
   </button>`;
 }
 function miniCheck(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>`; }
+function diffStar(){ return `<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" stroke="none" style="flex-shrink:0;margin-top:2px"><path d="M12 2l2.4 6.6L21 10l-5 4.3L17.4 21 12 17.3 6.6 21 8 14.3 3 10l6.6-1.4z"/></svg>`; }
 function modName(id){ return (TIERS.find(t=>t.id===id)||{}).nome||"—"; }
 /* Gramatura dinâmica: a partir do tamanho G, o papel sobe de gramatura */
 function isTamG(){
@@ -2496,10 +2572,17 @@ function isTamG(){
   return ["g1","gg"].includes(S.tam);
 }
 function gramaturaDesc(id){
-  if(id==="basico") return "Kraft 150g";
+  if(id==="basico") return "Kraft 90g a 180g";
   if(id==="intermediario") return `Offset ${isTamG()?"240g":"180g"}`;
   if(id==="premium") return S.mat==="duplex" ? "Duplex 240g" : `Triplex ${isTamG()?"250g":"210g"}`;
   return "";
+}
+/* Descrição de papel pra usar no resumo/preview/WhatsApp: quando o cliente
+   escolhe o material (Premium), mostra a escolha; nos demais, mostra a
+   gramatura fixa/dinâmica da categoria — assim "Papel" aparece sempre. */
+function papelSummary(){
+  const t = tier(); if(!t) return "—";
+  return t.materiais ? (S.mat?matNameSimple():"—") : gramaturaDesc(S.mod);
 }
 function modFull(id){
   const t=TIERS.find(x=>x.id===id); if(!t) return "—";
@@ -2569,7 +2652,7 @@ function bagSVG() {
     const ACAB_NOMES = {
       lam_fosca:"Laminação fosca", lam_brilho:"Laminação brilho",
       hot_dourado:"Hot stamping dourado", hot_prata:"Hot stamping prata",
-      verniz:"Verniz localizado"
+      verniz:"Laminação fosca com verniz localizado"
     };
     const lastId = S.acab[S.acab.length-1];
     const src = ACAB_MAP[lastId];
@@ -2756,9 +2839,9 @@ function openTab(tab){
 const CONFIG_P2 = {
   marca: "Sacolas Já",
   // Seu WhatsApp com DDI+DDD, só números. Ex.: 5511999998888
-  whatsapp: "5511972224120",
+  whatsapp: "119735958434",
   // WhatsApp específico para sacola plástica
-  whatsappPlastica: "5511972224120",
+  whatsappPlastica: "119735958434",
 
   // ── TIPOS DE SACOLA ──────────────────────────────────────────
   // minimo  = quantidade mínima de pedido
