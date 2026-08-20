@@ -1666,7 +1666,7 @@ const CORES = [
 /* As 3 categorias — o coração do site. Cada uma trava o que faz sentido. */
 const TIERS = [
   {
-    id:"basico", nome:"Básico", papel:"Kraft", sub:"Papel kraft · 90g a 180g", badge:null,
+    id:"basico", nome:"Básico", papel:"Kraft", sub:"Papel kraft · 80g a 240g", badge:null,
     tagline:"🌿 Sustentável & Rústica",
     specs:[
       ["Estilo","Visual natural, poroso e fosco (eco-friendly)"],
@@ -1682,7 +1682,7 @@ const TIERS = [
     materiais:null, acabamentos:null, hotstamping:false,
   },
   {
-    id:"intermediario", nome:"Intermediária", papel:"Offset", sub:"Papel offset · 180g a 240g", badge:["best","Mais vendida"],
+    id:"intermediario", nome:"Intermediária", papel:"Offset", sub:"Papel offset · 150g a 240g", badge:["best","Mais vendida"],
     tagline:"⚪ Clean & Sem Brilho",
     specs:[
       ["Estilo","Toque suave e acabamento 100% fosco (sem película plástica)"],
@@ -1698,7 +1698,7 @@ const TIERS = [
     materiais:null, acabamentos:null, hotstamping:true,
   },
   {
-    id:"premium", nome:"Premium", papel:"Triplex", sub:"Papel triplex · 210g a 250g", badge:["prem","Premium"],
+    id:"premium", nome:"Premium", papel:["Duplex","Triplex"], sub:"Papel duplex ou triplex · 205g a 300g", badge:["prem","Premium"],
     tagline:"💎 Premium & Luxo 360°",
     specs:[
       ["Estilo","Impressão colorida total de alta definição com acabamento nobre"],
@@ -1768,6 +1768,28 @@ const ALCAS = [
   {id:"gorgurão",      nome:"Gorgurão",      d:"Fita de tecido com textura. Boa pegada e acabamento elegante."},
   {id:"sao_francisco", nome:"São Francisco", d:"Alça de papel com acabamento laminado. Visual sofisticado e resistente."},
 ];
+
+/* ═══════════════ GRAMATURAS ═══════════════
+   Lista por papel. "rec" é a que já vem selecionada. */
+const GRAMATURAS = {
+  kraft:   { nome:"Kraft",   lista:[80,90,100,110,150,180,240], rec:110 },
+  offset:  { nome:"Offset",  lista:[150,180,240],               rec:180 },
+  duplex:  { nome:"Duplex",  lista:[205,250,300],               rec:250 },
+  triplex: { nome:"Triplex", lista:[210,250,300],               rec:210 },
+};
+/* Qual papel vale agora: kraft e offset vêm da categoria; no Premium
+   depende do que o cliente escolheu na etapa "Qual tipo de papel?". */
+function papelAtual(){
+  if(S.mod==="basico") return "kraft";
+  if(S.mod==="intermediario") return "offset";
+  if(S.mod==="premium") return S.mat || null;
+  return null;
+}
+function gramInfo(){ const p=papelAtual(); return p ? (GRAMATURAS[p]||null) : null; }
+function gramAtual(){
+  const g=gramInfo(); if(!g) return null;
+  return (S.gram && g.lista.includes(S.gram)) ? S.gram : g.rec;
+}
 
 const MATERIAIS = [
   {id:"triplex", nome:"Triplex 210g", nomeSimples:"Triplex", d:"Encorpado, frente lisa branca — ótimo pra impressão fina"},
@@ -1934,7 +1956,7 @@ function setModDefaults(mod){
   else { var c=CORES.find(function(x){return !x.kraft;}); if(c){S.cor=c.hex;S.corNome=c.nome;} }
   if(mod!=="intermediario") S.ilhos=false;
   S.acab=[]; S.alca=null; S.numCores=null;
-  if(mod==="premium") S.mat="triplex"; else S.mat=null;
+  S.mat=null; S.gram=null;
 }
 
 function openSegPage(){
@@ -2002,9 +2024,11 @@ function steps(){
   const t = tier();
   if(!t) return list;
   const acabStep = t.acabamentos ? {key:"acab",label:"Acabamentos",render:stepAcab,valid:()=>true} : null;
-  // Premium: o acabamento é o diferencial da linha — pergunta logo depois da categoria
+  // Papel primeiro (Premium escolhe entre duplex e triplex), depois a gramatura
+  if(t.materiais) list.push({key:"mat",label:"Papel",render:stepMat,valid:()=>!!S.mat});
+  list.push({key:"gram",label:"Gramatura",render:stepGram,valid:()=>!!gramAtual()});
+  // Premium: o acabamento é o diferencial da linha — vem logo na sequência
   if(acabStep && S.mod==="premium") list.push(acabStep);
-  if(t.materiais && S.mod!=="premium") list.push({key:"mat",label:"Papel",render:stepMat,valid:()=>!!S.mat});
   list.push({key:"tam",label:"Tamanho",render:stepTam,valid:()=>!!S.tam});
   if(t.numCores) list.push({key:"numcores",label:"Impressão",render:stepNumCores,valid:()=>!!S.numCores});
   list.push({key:"alca",label:"Alça",render:stepAlca,valid:()=>!!S.alca});
@@ -2116,7 +2140,7 @@ function stepMod(){
       <div class="tier-top">
         <span class="tier-ico">${modIcon(t.id)}</span>
         <span>
-          <span class="tier-name">${t.nome}${t.papel?`<span class="tier-paper">${t.papel}</span>`:""}${t.badge?`<span class="badge ${t.badge[0]}">${t.badge[1]}</span>`:""}</span>
+          <span class="tier-name">${t.nome}${t.papel?(Array.isArray(t.papel)?t.papel:[t.papel]).map(p=>`<span class="tier-paper">${p}</span>`).join(""):""}${t.badge?`<span class="badge ${t.badge[0]}">${t.badge[1]}</span>`:""}</span>
           ${t.sub?`<span class="tier-sub">${t.sub}</span>`:""}
         </span>
         <span class="tier-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg></span>
@@ -2130,9 +2154,9 @@ function stepMod(){
 }
 function setMod(id){
   S.mod=id; const t=tier();
-  if(id==="premium") S.mat="triplex"; // sempre triplex no premium
   if(t.materiais){ if(!t.materiais.includes(S.mat)) S.mat=null; } else S.mat=null;
   if(t.numCores){ if(!t.numCores.includes(S.numCores)) S.numCores=null; } else S.numCores=null;
+  S.gram=null; // gramatura depende do papel
   // Mantém só os acabamentos compatíveis com a nova categoria — inclui o
   // grupo de hot stamping quando a categoria permite esse opcional (mesmo
   // quando não tem etapa própria de "Acabamentos", caso da Intermediária).
@@ -2154,13 +2178,38 @@ function setMod(id){
 
 function stepMat(){
   return head("Qual tipo de papel?",`O papel define a resistência e o visual. Ambos são rígidos e têm ótimo acabamento — a diferença está na estrutura.`) +
-  `<div class="opts" role="radiogroup">`+ MATERIAIS.map(m=>opt(S.mat===m.id,`setMat('${m.id}')`,paperIcon(),(m.id==="triplex"?`Triplex ${isTamG()?"250g":"210g"}`:m.nome),m.d)).join("")+`</div>
+  `<div class="opts" role="radiogroup">`+ MATERIAIS.map(m=>opt(S.mat===m.id,`setMat('${m.id}')`,paperIcon(),m.nomeSimples,m.d)).join("")+`</div>
   <div class="field" style="background:var(--green-soft);border-radius:14px;padding:14px 16px;margin-top:14px">
     <p style="margin:0;font-size:13.5px;color:var(--green-d);line-height:1.5">
       💡 <strong>Qual escolher?</strong> O Triplex tem a frente mais branca e lisa — ideal pra impressão fina e cores vibrantes. O Duplex é mais encorpado e estruturado, ideal pra marcas que querem mais robustez na sacola.
     </p>
   </div>`;}
-function setMat(id){ window.__justSelected=true; S.mat=id; renderStep(); }
+function setMat(id){ window.__justSelected=true; S.mat=id; S.gram=null; renderStep(); }
+
+function stepGram(){
+  const g = gramInfo();
+  if(!g) return head("Gramatura do papel","Escolha o papel na etapa anterior pra ver as gramaturas.");
+  if(!S.gram || !g.lista.includes(S.gram)) S.gram = g.rec;
+  const opcoes = g.lista.map(v=>
+    `<option value="${v}"${v===S.gram?' selected':''}>${v}g${v===g.rec?' — recomendada':''}</option>`
+  ).join("");
+  return head("Gramatura do papel",
+    `Já deixamos selecionada a gramatura que mais sai em ${g.nome}. Se preferir outra, é só trocar na lista.`) +
+  `<div class="field">
+     <label class="modal-label" for="gramSel">Gramatura do ${g.nome}</label>
+     <select id="gramSel" class="modal-input" style="width:100%" onchange="setGram(this.value)"
+             aria-label="Gramatura do papel">${opcoes}</select>
+     <p class="modal-hint">Quanto maior a gramatura, mais rígida e resistente fica a sacola.</p>
+   </div>
+   <div class="field" style="margin-top:20px">
+     <label class="modal-label" for="obsInp">Observações (opcional)</label>
+     <input id="obsInp" class="modal-input" style="width:100%" value="${(S.tema||'').replace(/"/g,'&quot;')}"
+            placeholder="Ex.: prazo, tema, detalhes da arte" oninput="S.tema=this.value"
+            aria-label="Observações">
+     <p class="modal-hint">Qualquer detalhe que ajude no orçamento.</p>
+   </div>`;
+}
+function setGram(v){ S.gram = parseInt(v,10); updateRecap(); renderPreview(); }
 
 function stepTam(){
   const SEG_LABELS={Restaurante:"Restaurante","Doceria & Cafe":"Doceria & Café",Moda:"Moda",Eventos:"Eventos",Bebidas:"Bebidas",Oticas:"Óticas",Joias:"Joias",Beleza:"Beleza",Delivery:"Delivery"};
@@ -2487,8 +2536,7 @@ function confirmQtyModal(){
 
 function stepFinal(){
   return head("Quase lá! 🎉","Confira o resumo e envie o pedido.") +
-  `<div class="field"><label>Observações (opcional)</label><input aria-label="Observações" value="${S.tema}" placeholder="Ex.: prazo, tema, detalhes da arte" oninput="S.tema=this.value"></div>
-   <div class="summary-card" style="margin-top:24px;display:flex;flex-direction:column;gap:8px;background:transparent;border:none;padding:0">`+ summaryRows() +`</div>
+  `<div class="summary-card" style="margin-top:24px;display:flex;flex-direction:column;gap:8px;background:transparent;border:none;padding:0">`+ summaryRows() +`</div>
    <a class="btn wa-btn" id="waBtn" href="#" onclick="return sendWhats()">
      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.2 1.3-1.7 1.3-.4 0-.9.1-3.2-.9s-3.7-3.5-3.8-3.6-1-1.3-1-2.5.6-1.8.9-2c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.5c-.1.2-.3.3-.1.6s.6 1 1.3 1.6c.9.8 1.6 1 1.8 1.1s.4.1.5-.1l.7-.8c.2-.2.3-.2.5-.1l1.9.9c.2.1.4.2.4.3.1.2.1.7-.1 1.3z"/></svg>
      Enviar pedido no WhatsApp
@@ -2620,10 +2668,8 @@ function isTamG(){
   return ["g1","gg"].includes(S.tam);
 }
 function gramaturaDesc(id){
-  if(id==="basico") return "Kraft 90g a 180g";
-  if(id==="intermediario") return `Offset ${isTamG()?"240g":"180g"}`;
-  if(id==="premium") return S.mat==="duplex" ? "Duplex 240g" : `Triplex ${isTamG()?"250g":"210g"}`;
-  return "";
+  const g = gramInfo(); const v = gramAtual();
+  return (g && v) ? `${g.nome} ${v}g` : "";
 }
 /* Descrição de papel pra usar no resumo/preview/WhatsApp: quando o cliente
    escolhe o material (Premium), mostra a escolha; nos demais, mostra a
@@ -2640,13 +2686,13 @@ function modFull(id){
 function alcaName(id){ return (ALCAS.find(a=>a.id===id)||{}).nome||"—"; }
 function matName(){
   const m=MATERIAIS.find(m=>m.id===S.mat); if(!m) return "a definir";
-  if(m.id==="triplex") return `Triplex ${isTamG()?"250g":"210g"}`;
-  return m.nome;
+  const v=gramAtual();
+  return v ? `${m.nomeSimples} ${v}g` : m.nomeSimples;
 }
 function matNameSimple(){
   const m=MATERIAIS.find(m=>m.id===S.mat); if(!m) return "a definir";
-  if(m.id==="triplex") return `Triplex ${isTamG()?"250g":"210g"}`;
-  return m.nome;
+  const v=gramAtual();
+  return v ? `${m.nomeSimples} ${v}g` : m.nomeSimples;
 }
 function acabNames(){ return S.acab.map(a=>(ACABAMENTOS.find(x=>x.id===a)||{}).nome).join(", "); }
 function tamName(){
