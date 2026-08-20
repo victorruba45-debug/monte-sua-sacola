@@ -1379,6 +1379,28 @@ main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)
   .btn{padding:14px 20px}
 }
 
+
+/* ── Mobile, etapa 1 (categoria): modo galeria ────────────────────────
+   Sem foto no topo — cada card mostra a sacola em tamanho grande,
+   pra pessoa escolher olhando a imagem.                            */
+@media(max-width:860px){
+  .builder[data-etapa="mod"] .preview-col{display:none}
+  .builder[data-etapa="mod"] .tier-top{
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-areas:"foto foto" "nome check";
+    align-items:center;
+    gap:12px;
+  }
+  .builder[data-etapa="mod"] .tier-ico{
+    grid-area:foto;
+    width:100%;height:auto;aspect-ratio:1/1;
+    border-radius:14px;
+  }
+  .builder[data-etapa="mod"] .tier-ico img{width:100%;height:100%;object-fit:cover}
+  .builder[data-etapa="mod"] .tier-top > span:nth-child(2){grid-area:nome}
+  .builder[data-etapa="mod"] .tier-check{grid-area:check}
+}
 </style>
 </head>
 <body>
@@ -2018,6 +2040,9 @@ function renderStep(){
   document.getElementById("progBar").style.width = (stepIdx/Math.max(1,total-1)*100)+"%";
   document.getElementById("stepLabel").textContent = st.label;
   const host = document.getElementById("stepHost");
+  // marca a etapa atual no container, pro CSS poder mudar o layout por etapa
+  const bd = document.querySelector(".builder");
+  if(bd) bd.setAttribute("data-etapa", st.key);
   host.innerHTML = mobileRecap() + st.render();
   // Cascata de entrada só ao trocar de passo — não ao re-selecionar uma opção
   host.classList.toggle("no-cascade", !!window.__justSelected);
@@ -2124,16 +2149,6 @@ function setMod(id){
   // Auto-recommend size for segment
   if(S.seg && !S.tam){ const recMap=SEG_REC_TAM[S.seg]||{}; if(recMap[id]) S.tam=recMap[id]; }
   renderStep();
-  // Etapa de categoria, só no mobile: sobe até a foto pra o cliente ver a sacola
-  // que acabou de escolher (no desktop a foto já fica fixa ao lado).
-  if(window.innerWidth <= 860 && steps()[stepIdx] && steps()[stepIdx].key === "mod"){
-    const alvo = document.querySelector(".preview-col") || document.querySelector(".builder");
-    if(alvo){
-      const suave = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const y = alvo.getBoundingClientRect().top + window.pageYOffset - 72; // desconta o cabeçalho fixo
-      window.scrollTo({top: Math.max(0, y), behavior: suave ? "smooth" : "auto"});
-    }
-  }
 }
 
 function stepMat(){
