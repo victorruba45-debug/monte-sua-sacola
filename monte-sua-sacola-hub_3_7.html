@@ -2290,15 +2290,7 @@ function stepGram(){
        </table>
      </div>
      <p class="modal-hint" style="margin-top:10px">Valores de referência. Na dúvida, mande a arte no WhatsApp que a gente confirma a melhor gramatura.</p>
-   </div>`:""}
-
-   <div class="field" style="margin-top:20px">
-     <label class="modal-label" for="obsInp">Observações (opcional)</label>
-     <input id="obsInp" class="modal-input" style="width:100%" value="${(S.tema||'').replace(/"/g,'&quot;')}"
-            placeholder="Ex.: prazo, tema, detalhes da arte" oninput="S.tema=this.value"
-            aria-label="Observações">
-     <p class="modal-hint">Qualquer detalhe que ajude no orçamento.</p>
-   </div>`;
+   </div>`:""}`;
 }
 function toggleGuiaGram(){ S._guiaGramOpen = !S._guiaGramOpen; renderStep(); }
 function setGram(v){ S.gram = parseInt(v,10); S.gramManual = true; updateRecap(); renderPreview(); }
@@ -2629,7 +2621,8 @@ function confirmQtyModal(){
 
 function stepFinal(){
   return head("Quase lá! 🎉","Confira o resumo e envie o pedido.") +
-  `<div class="summary-card" style="margin-top:24px;display:flex;flex-direction:column;gap:8px;background:transparent;border:none;padding:0">`+ summaryRows() +`</div>
+  `<div class="field"><label>Observações (opcional)</label><input aria-label="Observações" value="${(S.tema||'').replace(/"/g,'&quot;')}" placeholder="Ex.: prazo, tema, detalhes da arte" oninput="S.tema=this.value"></div>
+   <div class="summary-card" style="margin-top:24px;display:flex;flex-direction:column;gap:8px;background:transparent;border:none;padding:0">`+ summaryRows() +`</div>
    <a class="btn wa-btn" id="waBtn" href="#" onclick="return sendWhats()">
      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.2 1.3-1.7 1.3-.4 0-.9.1-3.2-.9s-3.7-3.5-3.8-3.6-1-1.3-1-2.5.6-1.8.9-2c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.5c-.1.2-.3.3-.1.6s.6 1 1.3 1.6c.9.8 1.6 1 1.8 1.1s.4.1.5-.1l.7-.8c.2-.2.3-.2.5-.1l1.9.9c.2.1.4.2.4.3.1.2.1.7-.1 1.3z"/></svg>
      Enviar pedido no WhatsApp
