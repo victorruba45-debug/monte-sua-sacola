@@ -1772,10 +1772,11 @@ const ALCAS = [
 /* ═══════════════ GRAMATURAS ═══════════════
    Lista por papel. "rec" é a que já vem selecionada. */
 const GRAMATURAS = {
-  kraft:   { nome:"Kraft",   lista:[80,90,100,110,150,180,240], rec:110 },
-  offset:  { nome:"Offset",  lista:[150,180,240],               rec:180 },
-  duplex:  { nome:"Duplex",  lista:[205,250,300],               rec:250 },
-  triplex: { nome:"Triplex", lista:[210,250,300],               rec:210 },
+  //                                                            padrão  sacola grande
+  kraft:   { nome:"Kraft",   lista:[80,90,100,110,150,180,240], rec:110, recG:180 },
+  offset:  { nome:"Offset",  lista:[150,180,240],               rec:180, recG:240 },
+  duplex:  { nome:"Duplex",  lista:[205,250,300],               rec:250, recG:300 },
+  triplex: { nome:"Triplex", lista:[210,250,300],               rec:210, recG:250 },
 };
 /* Qual papel vale agora: kraft e offset vêm da categoria; no Premium
    depende do que o cliente escolheu na etapa "Qual tipo de papel?". */
@@ -1786,9 +1787,11 @@ function papelAtual(){
   return null;
 }
 function gramInfo(){ const p=papelAtual(); return p ? (GRAMATURAS[p]||null) : null; }
+/* Recomendada: sobe um degrau quando a sacola é grande — mais papel pra aguentar o peso. */
+function gramRec(){ const g=gramInfo(); if(!g) return null; return (isTamG() && g.recG) ? g.recG : g.rec; }
 function gramAtual(){
   const g=gramInfo(); if(!g) return null;
-  return (S.gram && g.lista.includes(S.gram)) ? S.gram : g.rec;
+  return (S.gram && g.lista.includes(S.gram)) ? S.gram : gramRec();
 }
 
 const MATERIAIS = [
@@ -2026,7 +2029,6 @@ function steps(){
   const acabStep = t.acabamentos ? {key:"acab",label:"Acabamentos",render:stepAcab,valid:()=>true} : null;
   // Papel primeiro (Premium escolhe entre duplex e triplex), depois a gramatura
   if(t.materiais) list.push({key:"mat",label:"Papel",render:stepMat,valid:()=>!!S.mat});
-  list.push({key:"gram",label:"Gramatura",render:stepGram,valid:()=>!!gramAtual()});
   // Premium: o acabamento é o diferencial da linha — vem logo na sequência
   if(acabStep && S.mod==="premium") list.push(acabStep);
   list.push({key:"tam",label:"Tamanho",render:stepTam,valid:()=>!!S.tam});
@@ -2038,6 +2040,8 @@ function steps(){
   list.push({key:"qtd",label:"Quantidade",render:stepQtd,valid:()=>!!S.qtd});
   // Segmento do cliente: pergunta logo antes de finalizar/enviar pro WhatsApp
   list.push({key:"seg",label:"Segmento",render:stepSeg,valid:()=>!!S.seg});
+  // Gramatura por último: já sabemos o tamanho, então a recomendação leva ele em conta
+  list.push({key:"gram",label:"Gramatura",render:stepGram,valid:()=>!!gramAtual()});
   list.push({key:"final",label:"Finalizar",render:stepFinal,valid:()=>true});
   return list;
 }
@@ -2156,7 +2160,7 @@ function setMod(id){
   S.mod=id; const t=tier();
   if(t.materiais){ if(!t.materiais.includes(S.mat)) S.mat=null; } else S.mat=null;
   if(t.numCores){ if(!t.numCores.includes(S.numCores)) S.numCores=null; } else S.numCores=null;
-  S.gram=null; // gramatura depende do papel
+  S.gram=null; S.gramManual=false; // gramatura depende do papel
   // Mantém só os acabamentos compatíveis com a nova categoria — inclui o
   // grupo de hot stamping quando a categoria permite esse opcional (mesmo
   // quando não tem etapa própria de "Acabamentos", caso da Intermediária).
@@ -2184,17 +2188,17 @@ function stepMat(){
       💡 <strong>Qual escolher?</strong> O Triplex tem a frente mais branca e lisa — ideal pra impressão fina e cores vibrantes. O Duplex é mais encorpado e estruturado, ideal pra marcas que querem mais robustez na sacola.
     </p>
   </div>`;}
-function setMat(id){ window.__justSelected=true; S.mat=id; S.gram=null; renderStep(); }
+function setMat(id){ window.__justSelected=true; S.mat=id; S.gram=null; S.gramManual=false; renderStep(); }
 
 function stepGram(){
   const g = gramInfo();
   if(!g) return head("Gramatura do papel","Escolha o papel na etapa anterior pra ver as gramaturas.");
-  if(!S.gram || !g.lista.includes(S.gram)) S.gram = g.rec;
+  if(!S.gramManual || !S.gram || !g.lista.includes(S.gram)) S.gram = gramRec();
   const opcoes = g.lista.map(v=>
-    `<option value="${v}"${v===S.gram?' selected':''}>${v}g${v===g.rec?' — recomendada':''}</option>`
+    `<option value="${v}"${v===S.gram?' selected':''}>${v}g${v===gramRec()?' — recomendada':''}</option>`
   ).join("");
   return head("Gramatura do papel",
-    `Já deixamos selecionada a gramatura que mais sai em ${g.nome}. Se preferir outra, é só trocar na lista.`) +
+    `Pelo tamanho que você escolheu, a gramatura de ${gramRec()}g em ${g.nome} é a que recomendamos. Se preferir outra, é só trocar na lista.`) +
   `<div class="field">
      <label class="modal-label" for="gramSel">Gramatura do ${g.nome}</label>
      <select id="gramSel" class="modal-input" style="width:100%" onchange="setGram(this.value)"
@@ -2209,7 +2213,7 @@ function stepGram(){
      <p class="modal-hint">Qualquer detalhe que ajude no orçamento.</p>
    </div>`;
 }
-function setGram(v){ S.gram = parseInt(v,10); updateRecap(); renderPreview(); }
+function setGram(v){ S.gram = parseInt(v,10); S.gramManual = true; updateRecap(); renderPreview(); }
 
 function stepTam(){
   const SEG_LABELS={Restaurante:"Restaurante","Doceria & Cafe":"Doceria & Café",Moda:"Moda",Eventos:"Eventos",Bebidas:"Bebidas",Oticas:"Óticas",Joias:"Joias",Beleza:"Beleza",Delivery:"Delivery"};
