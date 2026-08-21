@@ -2243,7 +2243,8 @@ function setTam(id){ window.__justSelected=true; S.tam=id; renderStep(); }
 function tamCustomBlock(){
   const sel = S.tam==="custom" && S.tamCustom;
   const c = S.tamCustom||{};
-  const open = !!S._tamCustomOpen;
+  // Aberto por padrão — o cliente vê o campo sem precisar tocar
+  const open = S._tamCustomOpen !== false;
   return `
   <button class="bonus-ilhos ${open?'open':''} ${sel?'tam-custom-sel':''}" onclick="toggleTamCustom()" aria-expanded="${open?'true':'false'}">
     <span class="bonus-txt">
@@ -2262,7 +2263,7 @@ function tamCustomBlock(){
     <button class="modal-confirm tam-custom-confirm" id="tcConfirm" onclick="confirmTamCustom()" ${(c.l>0&&c.a>0&&c.p>0)?'':'disabled'}>Usar esta medida</button>
   </div>`:''}`;
 }
-function toggleTamCustom(){ S._tamCustomOpen = !S._tamCustomOpen; renderStep(); }
+function toggleTamCustom(){ S._tamCustomOpen = (S._tamCustomOpen === false); renderStep(); }
 function onTamCustomInput(){
   const l=+document.getElementById('tcL').value, a=+document.getElementById('tcA').value, p=+document.getElementById('tcP').value;
   document.getElementById('tcConfirm').disabled = !(l>0 && a>0 && p>0);
