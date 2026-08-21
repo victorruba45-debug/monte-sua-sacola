@@ -1402,6 +1402,44 @@ main{animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)
   .builder[data-etapa="mod"] .tier-top > span:nth-child(2){grid-area:nome}
   .builder[data-etapa="mod"] .tier-check{grid-area:check}
 }
+
+/* ── Guia de gramaturas ─────────────────────────────────────── */
+.gram-peso{
+  margin:10px 0 4px;font-size:.92rem;color:var(--ink);
+  background:var(--green-soft,#eef3ec);border-radius:10px;padding:9px 12px;
+}
+.gram-peso strong{font-weight:700}
+.gram-tabela-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.gram-tabela{width:100%;border-collapse:collapse;font-size:.82rem;line-height:1.45}
+.gram-tabela th,.gram-tabela td{
+  text-align:left;padding:9px 10px;border-bottom:1px solid var(--line-2);vertical-align:top;
+}
+.gram-tabela thead th{
+  font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--ink-faint);font-weight:800;border-bottom:1px solid var(--line);
+}
+.gram-tabela tbody th{white-space:nowrap;font-weight:700;color:var(--ink)}
+.gram-tabela td{color:var(--ink-soft)}
+.gram-tabela tr:last-child th,.gram-tabela tr:last-child td{border-bottom:none}
+.gram-tabela .gram-atual th,.gram-tabela .gram-atual td{background:var(--paper);color:var(--ink)}
+.gram-tabela .gram-atual th::after{content:" ✓";color:var(--green)}
+
+/* No celular a tabela vira blocos empilhados — cabe sem rolagem lateral */
+@media(max-width:560px){
+  .gram-tabela thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .gram-tabela,.gram-tabela tbody,.gram-tabela tr,.gram-tabela th,.gram-tabela td{display:block;width:auto}
+  .gram-tabela tr{
+    border:1px solid var(--line-2);border-radius:12px;padding:10px 12px;margin-bottom:10px;
+  }
+  .gram-tabela tr:last-child{margin-bottom:0}
+  .gram-tabela th,.gram-tabela td{border:none;padding:2px 0}
+  .gram-tabela tbody th{font-size:1rem;margin-bottom:2px}
+  .gram-tabela td::before{
+    content:attr(data-rot) " · ";font-weight:700;color:var(--ink);
+  }
+  .gram-tabela .gram-atual{border-color:var(--green);background:var(--paper)}
+  .gram-tabela .gram-atual th,.gram-tabela .gram-atual td{background:transparent}
+}
 </style>
 </head>
 <body>
@@ -1666,7 +1704,7 @@ const CORES = [
 /* As 3 categorias — o coração do site. Cada uma trava o que faz sentido. */
 const TIERS = [
   {
-    id:"basico", nome:"Básico", papel:"Kraft", sub:"Papel kraft · 80g a 240g", badge:null,
+    id:"basico", nome:"Básico", papel:"Kraft", sub:"Papel kraft · 90g a 180g", badge:null,
     tagline:"🌿 Sustentável & Rústica",
     specs:[
       ["Estilo","Visual natural, poroso e fosco (eco-friendly)"],
@@ -1698,7 +1736,7 @@ const TIERS = [
     materiais:null, acabamentos:null, hotstamping:true,
   },
   {
-    id:"premium", nome:"Premium", papel:["Duplex","Triplex"], sub:"Papel duplex ou triplex · 205g a 300g", badge:["prem","Premium"],
+    id:"premium", nome:"Premium", papel:["Duplex","Triplex"], sub:"Papel duplex ou triplex · 190g a 300g", badge:["prem","Premium"],
     tagline:"💎 Premium & Luxo 360°",
     specs:[
       ["Estilo","Impressão colorida total de alta definição com acabamento nobre"],
@@ -1770,13 +1808,31 @@ const ALCAS = [
 ];
 
 /* ═══════════════ GRAMATURAS ═══════════════
-   Lista por papel. "rec" é a que já vem selecionada. */
+   Lista por papel, com peso suportado e indicação de uso.
+   "rec" é a que vem selecionada; "recG" vale para sacola grande. */
 const GRAMATURAS = {
-  //                                                            padrão  sacola grande
-  kraft:   { nome:"Kraft",   lista:[80,90,100,110,150,180,240], rec:110, recG:180 },
-  offset:  { nome:"Offset",  lista:[150,180,240],               rec:180, recG:240 },
-  duplex:  { nome:"Duplex",  lista:[205,250,300],               rec:250, recG:300 },
-  triplex: { nome:"Triplex", lista:[210,250,300],               rec:210, recG:250 },
+  kraft: { nome:"Kraft", rec:100, recG:180, opcoes:[
+    {g:90,  peso:"Até 5kg",  uso:"Itens leves, como cosméticos pequenos, doces e lembrancinhas de evento."},
+    {g:100, peso:"Até 6kg",  uso:"Versátil para uso geral — delivery, restaurante, doceria e moda leve."},
+    {g:135, peso:"Até 7kg",  uso:"Equilíbrio entre resistência e praticidade. Atende bem a maioria dos casos: cosméticos, moda, restaurante, eventos e agências."},
+    {g:150, peso:"Até 8kg",  uso:"Produtos de maior valor ou peso, como calçados, joias leves e kits de evento maiores."},
+    {g:180, peso:"Até 10kg", uso:"A mais robusta do kraft: moda pesada, gastronomia gourmet e kits corporativos volumosos."},
+  ]},
+  offset: { nome:"Offset", rec:180, recG:240, opcoes:[
+    {g:150, peso:"Até 2kg",  uso:"Gramatura de entrada, para presentes leves, papelaria e itens do dia a dia. Vai bem em brindes de evento e kits promocionais simples."},
+    {g:180, peso:"1,5 a 2kg sem reforço · até 4kg com reforço de fundo", uso:"A \u0022coringa\u0022 do mercado — cosméticos, moda, restaurante e delivery, eventos e agências. Entrada para sacola de qualidade; use reforço de fundo em sacolas maiores ou mais pesadas."},
+    {g:240, peso:"Até 6kg com reforço de fundo", uso:"A mais robusta da linha offset: moda pesada, calçados, doceria (bolos e caixas maiores) e kits corporativos que pedem mais estrutura."},
+  ]},
+  duplex: { nome:"Duplex", rec:205, recG:250, opcoes:[
+    {g:190, peso:"Até 3kg com reforço de fundo", uso:"Entrada do duplex: cosméticos, moda, joias leves e presentes de evento."},
+    {g:205, peso:"Até 4kg com reforço de fundo", uso:"Bom equilíbrio entre estrutura e praticidade. Cosméticos, moda, confeitaria fina e eventos corporativos."},
+    {g:250, peso:"Até 5kg com reforço de fundo", uso:"A mais firme do duplex: calçados, joalheria e kits corporativos de alto padrão."},
+  ]},
+  triplex: { nome:"Triplex", rec:210, recG:250, opcoes:[
+    {g:210, peso:"Até 4kg com reforço de fundo", uso:"Entrada do triplex: cosméticos premium, confeitaria de luxo e joias pequenas."},
+    {g:250, peso:"Até 5kg com reforço de fundo", uso:"Padrão do mercado para alto padrão: joalheria, moda de grife, agências e eventos exclusivos."},
+    {g:300, peso:"Até 6kg com reforço de fundo", uso:"A mais robusta do triplex: calçados de grife, joias maiores e grandes eventos corporativos. Combine com laminação para evitar quebra na dobra."},
+  ]},
 };
 /* Qual papel vale agora: kraft e offset vêm da categoria; no Premium
    depende do que o cliente escolheu na etapa "Qual tipo de papel?". */
@@ -1789,9 +1845,11 @@ function papelAtual(){
 function gramInfo(){ const p=papelAtual(); return p ? (GRAMATURAS[p]||null) : null; }
 /* Recomendada: sobe um degrau quando a sacola é grande — mais papel pra aguentar o peso. */
 function gramRec(){ const g=gramInfo(); if(!g) return null; return (isTamG() && g.recG) ? g.recG : g.rec; }
+function gramLista(){ const g=gramInfo(); return g ? g.opcoes.map(o=>o.g) : []; }
+function gramItem(v){ const g=gramInfo(); return g ? (g.opcoes.find(o=>o.g===v)||null) : null; }
 function gramAtual(){
   const g=gramInfo(); if(!g) return null;
-  return (S.gram && g.lista.includes(S.gram)) ? S.gram : gramRec();
+  return (S.gram && gramLista().includes(S.gram)) ? S.gram : gramRec();
 }
 
 const MATERIAIS = [
@@ -2193,18 +2251,47 @@ function setMat(id){ window.__justSelected=true; S.mat=id; S.gram=null; S.gramMa
 function stepGram(){
   const g = gramInfo();
   if(!g) return head("Gramatura do papel","Escolha o papel na etapa anterior pra ver as gramaturas.");
-  if(!S.gramManual || !S.gram || !g.lista.includes(S.gram)) S.gram = gramRec();
-  const opcoes = g.lista.map(v=>
-    `<option value="${v}"${v===S.gram?' selected':''}>${v}g${v===gramRec()?' — recomendada':''}</option>`
+  if(!S.gramManual || !S.gram || !gramLista().includes(S.gram)) S.gram = gramRec();
+  const atual = gramItem(S.gram) || {};
+  const opcoes = g.opcoes.map(o=>
+    `<option value="${o.g}"${o.g===S.gram?' selected':''}>${o.g}g${o.g===gramRec()?' — recomendada':''}</option>`
   ).join("");
+  const guiaAberto = !!S._guiaGramOpen;
+  const linhas = g.opcoes.map(o=>`
+    <tr${o.g===S.gram?' class="gram-atual"':''}>
+      <th scope="row">${o.g}g</th>
+      <td data-rot="Suporta">${o.peso}</td>
+      <td data-rot="Indicada para">${o.uso}</td>
+    </tr>`).join("");
+
   return head("Gramatura do papel",
     `Pelo tamanho que você escolheu, a gramatura de ${gramRec()}g em ${g.nome} é a que recomendamos. Se preferir outra, é só trocar na lista.`) +
   `<div class="field">
      <label class="modal-label" for="gramSel">Gramatura do ${g.nome}</label>
      <select id="gramSel" class="modal-input" style="width:100%" onchange="setGram(this.value)"
              aria-label="Gramatura do papel">${opcoes}</select>
-     <p class="modal-hint">Quanto maior a gramatura, mais rígida e resistente fica a sacola.</p>
+     ${atual.peso?`<p class="gram-peso"><strong>${S.gram}g</strong> — suporta ${atual.peso.charAt(0).toLowerCase()+atual.peso.slice(1)}</p>`:""}
+     ${atual.uso?`<p class="modal-hint">${atual.uso}</p>`:""}
    </div>
+
+   <button class="bonus-ilhos ${guiaAberto?'open':''}" onclick="toggleGuiaGram()" aria-expanded="${guiaAberto?'true':'false'}" style="margin-top:14px">
+     <span class="bonus-txt">
+       <span class="bonus-t">Na dúvida? Veja o guia de gramaturas do ${g.nome}</span>
+       <span class="bonus-d">Quanto cada uma aguenta e pra que tipo de produto serve.</span>
+     </span>
+     <svg class="bonus-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+   </button>
+   ${guiaAberto?`
+   <div class="bonus-panel">
+     <div class="gram-tabela-wrap">
+       <table class="gram-tabela">
+         <thead><tr><th>Gramatura</th><th>Peso indicado</th><th>Indicada para</th></tr></thead>
+         <tbody>${linhas}</tbody>
+       </table>
+     </div>
+     <p class="modal-hint" style="margin-top:10px">Valores de referência. Na dúvida, mande a arte no WhatsApp que a gente confirma a melhor gramatura.</p>
+   </div>`:""}
+
    <div class="field" style="margin-top:20px">
      <label class="modal-label" for="obsInp">Observações (opcional)</label>
      <input id="obsInp" class="modal-input" style="width:100%" value="${(S.tema||'').replace(/"/g,'&quot;')}"
@@ -2213,6 +2300,7 @@ function stepGram(){
      <p class="modal-hint">Qualquer detalhe que ajude no orçamento.</p>
    </div>`;
 }
+function toggleGuiaGram(){ S._guiaGramOpen = !S._guiaGramOpen; renderStep(); }
 function setGram(v){ S.gram = parseInt(v,10); S.gramManual = true; updateRecap(); renderPreview(); }
 
 function stepTam(){
