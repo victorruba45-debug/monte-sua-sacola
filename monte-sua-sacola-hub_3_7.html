@@ -2034,14 +2034,14 @@ function steps(){
   list.push({key:"tam",label:"Tamanho",render:stepTam,valid:()=>!!S.tam});
   if(t.numCores) list.push({key:"numcores",label:"Impressão",render:stepNumCores,valid:()=>!!S.numCores});
   list.push({key:"alca",label:"Alça",render:stepAlca,valid:()=>!!S.alca});
+  // Gramatura logo depois da alça — o tamanho já foi escolhido, então a recomendação leva ele em conta
+  list.push({key:"gram",label:"Gramatura",render:stepGram,valid:()=>!!gramAtual()});
   // Ilhós virou opcional em cascata dentro da etapa de alça (sem etapa própria)
   // Demais categorias mantêm o acabamento no fim do fluxo
   if(acabStep && S.mod!=="premium") list.push(acabStep);
   list.push({key:"qtd",label:"Quantidade",render:stepQtd,valid:()=>!!S.qtd});
   // Segmento do cliente: pergunta logo antes de finalizar/enviar pro WhatsApp
   list.push({key:"seg",label:"Segmento",render:stepSeg,valid:()=>!!S.seg});
-  // Gramatura por último: já sabemos o tamanho, então a recomendação leva ele em conta
-  list.push({key:"gram",label:"Gramatura",render:stepGram,valid:()=>!!gramAtual()});
   list.push({key:"final",label:"Finalizar",render:stepFinal,valid:()=>true});
   return list;
 }
